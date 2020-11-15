@@ -4,9 +4,42 @@
       <script src="/socket.io/socket.io.js"></script> 
       <script src="client.js"></script>
    </head>
+
    <body>
-      <input type=text" id="message_input"/>
-      <button onclick="sendMessage()">send</button>
-      <div id="chatlog"></div>
+      <div id = "login-screen">
+         Username:
+         <input id="username" type="text" maxlength="25"> 
+         <button id="login">Sign On</button>
+      </div>
+
+      <div id = "home-screen">
+         <input id="room-name" type="text" maxlength="50" value="Enter Room Name Here"> 
+         <button id="join-room">Join Room</button>
+         <button id="browse">Browse Current Rooms</button>
+         <button id="create-room">Create New Room</button>
+      </div>
+
+      <div id="password-screen">
+         Please enter the room password:
+         <input id="password-input" type="text" maxlength="25">
+         <button id="join-private-room">Join Room</button>
+      </div>
+
+      <div id="create-screen">
+         <input id="new-room-name" type="text" maxlength="50" value="Room Name">
+         <input id="new-room-password" type="text" maxlength="25" value="Room Password (Optional)">
+         <button id="create-room-button">Create</button>
+      </div>
+
+      <div id="browse-screen">
+         <h1>Rooms in Use:</h1>
+      </div>
+
+      <div id = "chat-screen">
+         <input type=text id="message_input"/>
+         <button onclick="sendMessage()">send</button>
+         <div id="chatlog"></div>
+      </div>
    </body>
 </html>
+
