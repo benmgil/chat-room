@@ -26,9 +26,13 @@ document.addEventListener("DOMContentLoaded", function(){
   loginInput = document.getElementById("username");
   roomInput = document.getElementById("room-name");
   joinRoomButton = document.getElementById("join-room");
-  //browseRoomsButton = document.getElementById("browse");
+  browseRoomsButton = document.getElementById("browse");
   createRoomButton = document.getElementById("create-room");
   passwordInput = document.getElementById("password-input");
-  //finish the rest of them
+  createNameInput = document.getElementById("new-room-name");
+  createPasswordInput = document.getElementById("new-room-password");
+  createButton = document.getElementById("create-room-button");
+  browseScreen = document.getElementById("browse-screen");
+
 
 })
