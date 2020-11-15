@@ -6,6 +6,7 @@
    </head>
 
    <body>
+      <p id="error-message"> </p>
       <div id = "login-screen">
          Username:
          <input id="username" type="text" maxlength="25"> 
@@ -33,11 +34,12 @@
 
       <div id="browse-screen">
          <h1>Rooms in Use:</h1>
+         <div id="room-list"></div>
       </div>
 
       <div id = "chat-screen">
          <input type=text id="message_input"/>
-         <button onclick="sendMessage()">send</button>
+         <button id="send-button">send</button>
          <div id="chatlog"></div>
       </div>
    </body>
