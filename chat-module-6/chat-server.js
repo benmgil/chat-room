@@ -1,16 +1,11 @@
-// Require the packages we will use:
+
+//Static client server initialization
 const http = require("http"),
     fs = require("fs");
-
 const port = 3000;
 const file = "client.html";
-// Listen for HTTP connections.  This is essentially a miniature static file server that only serves our one file, client.html, on port 3456:
 const server = http.createServer(function (req, res) {
-    // This callback runs when a new connection is made to our HTTP server.
-
     fs.readFile(file, function (err, data) {
-        // This callback runs when the client.html file has been read from the filesystem.
-
         if (err) return res.writeHead(500);
         res.writeHead(200);
         res.end(data);
@@ -18,18 +13,82 @@ const server = http.createServer(function (req, res) {
 });
 server.listen(port);
 
-// Import Socket.IO and pass our HTTP server object to it.
+//socket setup
 const socketio = require("socket.io")(server);
-
-// Attach our Socket.IO server to our HTTP server to listen
 const io = socketio.listen(server);
-io.sockets.on("connection", function (socket) {
-    // This callback runs when a new Socket.IO connection is established.
 
-    socket.on('message_to_server', function (data) {
-        // This callback runs when the server receives a new message from the client.
 
-        console.log("message: " + data["message"]); // log it to the Node.JS output
-        io.sockets.emit("message_to_client", { message: data["message"] }) // broadcast the message to other users
-    });
+let rooms = {};
+
+class User {
+  constructor(socket, username){
+    this.socket = socket;
+    this.username = username;
+  }
+}
+class Room {
+  constructor(name, admin, password){
+    this.name = name;
+    this.admin = admin;
+    this.password = password;
+    this.users = [admin];
+    this.bannedUsers = [];
+    this.mutedUsers = [];
+  }
+}
+
+
+
+io.sockets.on("connection", socket => {
+  let roomNameRequested;
+  socket.on('login', function(data){
+    socket.user = new User(socket, data.username);
+  });
+
+  socket.on('create_room', function (data){
+    if(!(data.roomName in Object.keys(rooms)){
+      let room = new Room(data.roomName, socket.user, data.password);
+      rooms[data.roomName] = room;
+      io.to(socket.id).emit("create_response", {status: "success"})
+      socket.join(data.roomName);
+    }
+    else{
+      io.to(socket.id).emit("create_response", {status: "failure", message: "That room name is taken"});
+    }
+  })
+
+  socket.on('join_room', function(data){
+    if(data.roomName in Object.keys(room)){
+      roomNameRequested = data.roomName;
+      let roomRequested = rooms[roomNameRequested]
+      if(roomRequested.password == ""){
+        io.to(socket.id).emit("join_response", {status: success});
+        roomRequested.addUser(socket.user);
+      }
+      else{
+        io.to(socket.id).emit("password_required");
+      }
+    }
+    else{
+      io.to(socket.id).emit("join_response", {status: "failure", message: "That room doesn't exist"});
+    }
+  });
+
+  socket.on("password_entered", function(data){
+    if(data.password = rooms[roomNameRequested].password){
+      io.to(socket.id).emit("join_response", {status: success});
+      roomRequested.addUser(socket.user);
+    }
+    else{
+      io.to(socket.id).emit("join_response", {status: "failure", message: "Incorrect password"});
+    }
+  });
+
+  socket.on("showShit", function(data){
+    console.log(rooms);
+  })
+    // socket.on('message_to_server', data => {
+    //     console.log("message: " + data["message"]); // log it to the Node.JS output
+    //     io.sockets.emit("message_to_client", { message: data["message"] }) // broadcast the message to other users
+    // });
 });
