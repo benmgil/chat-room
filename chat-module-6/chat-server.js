@@ -67,7 +67,7 @@ server.listen(port);
 const socketio = require("socket.io")(server);
 const io = socketio.listen(server);
 
-
+let users = {};
 let rooms = {};
 
 class User {
@@ -91,13 +91,31 @@ class Room {
 
 io.sockets.on("connection", socket => {
   let roomNameRequested;
+  let socketUser = new User(socket);
+  socket.emit("request_username");
   socket.on('login', function(data){
-    socket.user = new User(socket, data.username);
+    let requestedUsername = data.username;
+    console.log(requestedUsername);
+    console.log(Object.keys(users));
+    console.log(requestedUsername in Object.keys(users))
+    console.log(Object.keys(users).indexOf(requestedUsername));
+    if(Object.keys(users).indexOf(requestedUsername) != -1){
+      console.log("IF")
+      socket.emit("login_response",{status: "failure", message: "Username already in use"})
+    }
+    else{
+      console.log("ELSE")
+      users[requestedUsername] = new User(socket, requestedUsername);
+      socket.emit("login_response", {status: "success"});
+    }
+    // console.log(data.username);
+    // socketUser.setUsername(data.username)
   });
 
   socket.on('create_room', function (data){
+    //console.log(socketUser);
     if(!(data.roomName in Object.keys(rooms))){
-      let room = new Room(data.roomName, socket.user, data.password);
+      let room = new Room(data.roomName, socketUser, data.password);
       rooms[data.roomName] = room;
       io.to(socket.id).emit("create_response", {status: "success"})
       socket.join(data.roomName);
@@ -136,6 +154,8 @@ io.sockets.on("connection", socket => {
 
   socket.on("showShit", function(data){
     console.log(rooms);
+    console.log(users);
+    console.log(" ");
   })
     // socket.on('message_to_server', data => {
     //     console.log("message: " + data["message"]); // log it to the Node.JS output
