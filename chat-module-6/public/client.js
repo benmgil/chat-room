@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function(){
   browseScreen = document.getElementById("browse-screen");
   roomList = document.getElementById("room-list");
   chatBox = document.getElementById("chatlog");
-  adminCommands = document.getElementById("chat-commands");
+  adminCommands = document.getElementById("admin-commands");
   muteButton = document.getElementById("mute");
   removeButton = document.getElementById("remove");
   banButton = document.getElementById("ban");
@@ -167,6 +167,7 @@ function setupSockets(){
     chatDiv.appendChild(contentP);
     chatBox.appendChild(chatDiv);
   })
+
 }
 
 //joining room
@@ -181,6 +182,7 @@ function joinRoom(){
   }
   socket.on("join_response", function(data){
     if(data.status == "success"){
+      adminCommands.style.display = "none";
       homeScreen.style.display = "none";
       chatScreen.style.display = "block";
       passwordScreen.style.display = "none";
@@ -314,6 +316,6 @@ function sendChat(){
   else{
     errorMessage.innerText = "";
     chatText = chatInput.value;
-    socket.emit("send_chat", {chat_content:chatText, recipient:recipientSpan.value, sender:username})
+    socket.emit("send_chat", {chat_content:chatText, recipient: recipientSpan.value, sender:username})
   }
 }
