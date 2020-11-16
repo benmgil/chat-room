@@ -18,7 +18,7 @@ let createNameInput;
 let createPasswordInput;
 let createButton;
 let roomList;
-let chatLog;
+let chatBox;
 let adminCommands;
 let muteButton;
 let removeButton;
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function(){
   createButton = document.getElementById("create-room-button");
   browseScreen = document.getElementById("browse-screen");
   roomList = document.getElementById("room-list");
-  chatLog = document.getElementById("chatlog");
+  chatBox = document.getElementById("chatlog");
   adminCommands = document.getElementById("chat-commands");
   muteButton = document.getElementById("mute");
   removeButton = document.getElementById("remove");
@@ -111,6 +111,14 @@ function setupSockets(){
 
   //loading the list of people in a room, and adding event listeners depending on why the list is being shown
   socket.on("people_response", function(data){
+    if(requestType == "chat"){
+      let every = document.createElement("p");
+      every.className = "people-list";
+      every.innerText = "Everyone";
+      every.addEventListener("click", function(){
+        chatPerson("Everyone");
+      });
+    }
     data.peopleList.forEach(function(person, i){
       let personP = document.createElement("p");
       personP.className = "people-list";
@@ -139,7 +147,26 @@ function setupSockets(){
     });
   });
 
-
+  //updating the chat box
+  socket.on("chat_recieved", function(data){
+    let chatDiv = document.createElement("div");
+    let headerP = document.createElement("p");
+    let contentP = document.createElement("p");
+    contentP.innerText = data.chat_content;
+    if(!isPrivate){
+      headerP.innerText = "From: " + data.sender;
+      headerP.className = "public";
+      contentP.className = "public";
+    }
+    else{
+      headerP.innerText = "From: " + data.sender + "  (private)";
+      headerP.className = "private";
+      contentP.className = "private";
+    }
+    chatDiv.appendChild(headerP);
+    chatDiv.appendChild(contentP);
+    chatBox.appendChild(chatDiv);
+  })
 }
 
 //joining room
@@ -150,7 +177,7 @@ function joinRoom(){
   else{
     roomName = roomInput.value;
     errorMessage.innerText = "";
-    socket.emit("join_room", {username:username, roomName:roomName});
+    socket.emit("join_room", {roomName:roomName});
   }
   socket.on("join_response", function(data){
     if(data.status == "success"){
@@ -236,25 +263,25 @@ function toRoomsList(){
 }
 
 function requestMute(){
-  socket.emit("people_list", {username:username});
+  socket.emit("people_list");
   requestType = "mute";
   peopleList.style.display="block";
 }
 
 function requestRemove(){
-  socket.emit("people_list", {username:username});
+  socket.emit("people_list");
   requestType = "remove";
   peopleList.style.display="block";
 }
 
 function requestBan(){
-  socket.emit("people_list", {username:username});
+  socket.emit("people_list");
   requestType = "ban";
   peopleList.style.display="block";
 }
 
 function showPeople(){
-  socket.emit("people_list", {username:username});
+  socket.emit("people_list");
   requestType = "chat";
   peopleList.style.display="block";
 }
@@ -277,4 +304,16 @@ function banPerson(recipient){
 function chatPerson(recipient){
   peopleList.style.display = "none";
   recipientSpan.innerText = recipient;
+}
+
+
+function sendChat(){
+  if(chatInput.value == ""){
+    errorMessage.innerText = "Error: Please enter a message"
+  }
+  else{
+    errorMessage.innerText = "";
+    chatText = chatInput.value;
+    socket.emit("send_chat", {chat_content:chatText, recipient:recipientSpan.value, sender:username})
+  }
 }
