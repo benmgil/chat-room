@@ -85,28 +85,26 @@ class Room {
     this.bannedUsers = [];
     this.mutedUsers = [];
   }
+  addUser(user){
+    this.users.push(user);
+  }
 }
 
 
 
 io.sockets.on("connection", socket => {
   let roomNameRequested;
-  let socketUser = new User(socket);
+  let socketUser;
   socket.emit("request_username");
   socket.on('login', function(data){
     let requestedUsername = data.username;
-    console.log(data);
-    console.log(requestedUsername);
-    console.log(Object.keys(users));
-    console.log(requestedUsername in Object.keys(users))
-    console.log(Object.keys(users).indexOf(requestedUsername));
     if(Object.keys(users).indexOf(requestedUsername) != -1){
-      console.log("IF")
       socket.emit("login_response",{status: "failure", message: "Username already in use"})
     }
     else{
-      console.log("ELSE")
-      users[requestedUsername] = new User(socket, requestedUsername);
+      socketUser = new User(socket, requestedUsername);
+      console.log(socketUser.username);
+      users[requestedUsername] = socketUser;
       socket.emit("login_response", {status: "success"});
     }
     // console.log(data.username);
@@ -115,7 +113,7 @@ io.sockets.on("connection", socket => {
 
   socket.on('create_room', function (data){
     //console.log(socketUser);
-    if(!(data.roomName in Object.keys(rooms))){
+    if(Object.keys(rooms).indexOf(data.roomName) == -1){
       let room = new Room(data.roomName, socketUser, data.password);
       rooms[data.roomName] = room;
       io.to(socket.id).emit("create_response", {status: "success"})
@@ -127,29 +125,35 @@ io.sockets.on("connection", socket => {
   })
 
   socket.on('join_room', function(data){
-    if(data.roomName in Object.keys(room)){
-      roomNameRequested = data.roomName;
+    roomNameRequested = data.roomName;
+    console.log(roomNameRequested);
+    console.log(Object.keys(rooms))
+    if(Object.keys(rooms).indexOf(roomNameRequested) != -1){
       let roomRequested = rooms[roomNameRequested]
+      console.log(roomRequested);
       if(roomRequested.password == ""){
-        io.to(socket.id).emit("join_response", {status: success});
-        roomRequested.addUser(socket.user);
+        console.log("noPass")
+        socket.emit("join_response", {status: success});
+        roomRequested.addUser(socketUser);
       }
       else{
-        io.to(socket.id).emit("password_required");
+        console.log("pass");
+        socket.emit("password_required");
       }
     }
     else{
-      io.to(socket.id).emit("join_response", {status: "failure", message: "That room doesn't exist"});
+      console.log("fail");
+      socket.emit("join_response", {status: "failure", message: "That room doesn't exist"});
     }
   });
 
   socket.on("password_entered", function(data){
     if(data.password = rooms[roomNameRequested].password){
-      io.to(socket.id).emit("join_response", {status: success});
-      roomRequested.addUser(socket.user);
+      socket.emit("join_response", {status: success});
+      roomRequested.addUser(socketUser);
     }
     else{
-      io.to(socket.id).emit("join_response", {status: "failure", message: "Incorrect password"});
+      socket.emit("join_response", {status: "failure", message: "Incorrect password"});
     }
   });
 
