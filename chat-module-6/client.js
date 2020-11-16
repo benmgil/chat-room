@@ -18,11 +18,22 @@ let createNameInput;
 let createPasswordInput;
 let createButton;
 let roomList;
+let chatLog;
+let adminCommands;
+let muteButton;
+let removeButton;
+let banButton;
+let roomatesList;
+let recipientSpan;
+let showRoomatesButton;
+let chatInput;
+let sendButton;
 
 let socket;
 let username;
 let roomName;
 let password;
+let chatText;
 
 document.addEventListener("DOMContentLoaded", function(){
   loginScreen = document.getElementById("login-screen");
@@ -46,6 +57,16 @@ document.addEventListener("DOMContentLoaded", function(){
   createButton = document.getElementById("create-room-button");
   browseScreen = document.getElementById("browse-screen");
   roomList = document.getElementById("room-list");
+  chatLog = document.getElementById("chatlog");
+  adminCommands = document.getElementById("chat-commands");
+  muteButton = document.getElementById("mute");
+  removeButton = document.getElementById("remove");
+  banButton = document.getElementById("ban");
+  roomatesList = document.getElementById("ppl-list");
+  recipientSpan = document.getElementById("recipient");
+  showRoomatesButton = document.getElementById("show-people");
+  chatInput = document.getElementById("message-input");
+  sendButton = document.getElementById("send-button");
 
   loginButton.addEventListener("click", signOn);
   joinRoomButton.addEventListener("click", joinRoom)
@@ -53,6 +74,11 @@ document.addEventListener("DOMContentLoaded", function(){
   createRoomButton.addEventListener("click", toCreateRoom);
   createButton.addEventListener("click", createRoom)
   joinPrivateRoomButton.addEventListener("click", joinPrivateRoom);
+  muteButton.addEventListener("click", requestMute);
+  removeButton.addEventListener("click", requestRemove);
+  banButton.addEventListener("click", requestBan);
+  showRoomatesButton.addEventListener("click", showPeople);
+  sendButton.addEventListener("click", sendChat);
 })
 
 //logging in
@@ -69,7 +95,14 @@ function signOn(){
     socket.on("request_username", function(){
       socket.emit("login", {username:username});
     })
+    setupSockets();
   }
+}
+
+function setupSockets(){
+  socket.on("people_response", function(data){
+    
+  })
 }
 
 //joining room
@@ -172,4 +205,15 @@ function toRoomsList(){
       roomList.appendChild(roomp);
     })
   });
+}
+
+socket.on("people_")
+
+
+function loadPeople(){
+
+}
+
+function requestMute(){
+
 }
