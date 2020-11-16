@@ -27,39 +27,6 @@ const server = http.createServer(function (req, res) {
 			res.end();
 
     }
-  // var filename = path.join(__dirname, "public", url.parse(req.url).pathname);
-	// (fs.exists || path.exists)(filename, function(exists){
-	// 	if (exists) {
-	// 		fs.readFile(filename, function(err, data){
-	// 			if (err) {
-	// 				// File exists but is not readable (permissions issue?)
-	// 				res.writeHead(500, {
-	// 					"Content-Type": "text/plain"
-	// 				});
-	// 				res.write("Internal server error: could not read file");
-	// 				res.end();
-	// 				return;
-	// 			}
-  //
-	// 			// File exists and is readable
-	// 			var mimetype = mime.getType(filename);
-	// 			res.writeHead(200, {
-	// 				"Content-Type": mimetype
-	// 			});
-	// 			res.write(data);
-	// 			res.end();
-	// 			return;
-	// 		});
-	// 	}else{
-	// 		// File does not exist
-	// 		res.writeHead(404, {
-	// 			"Content-Type": "text/plain"
-	// 		});
-	// 		res.write("Requested file not found: "+filename);
-	// 		res.end();
-	// 		return;
-	// 	}
-	// });
 });
 server.listen(port);
 
@@ -74,6 +41,10 @@ class User {
   constructor(socket, username){
     this.socket = socket;
     this.username = username;
+    this.room = "";
+  }
+  joinRoom(room){
+    this.roomName = room;
   }
 }
 class Room {
@@ -103,7 +74,6 @@ io.sockets.on("connection", socket => {
     }
     else{
       socketUser = new User(socket, requestedUsername);
-      console.log(socketUser.username);
       users[requestedUsername] = socketUser;
       socket.emit("login_response", {status: "success"});
     }
@@ -114,7 +84,11 @@ io.sockets.on("connection", socket => {
   socket.on('create_room', function (data){
     //console.log(socketUser);
     if(Object.keys(rooms).indexOf(data.roomName) == -1){
-      let room = new Room(data.roomName, socketUser, data.password);
+      let pass = data.password;
+      if(!pass){
+        pass = "";
+      }
+      let room = new Room(data.roomName, socketUser, pass);
       rooms[data.roomName] = room;
       io.to(socket.id).emit("create_response", {status: "success"})
       socket.join(data.roomName);
@@ -126,36 +100,55 @@ io.sockets.on("connection", socket => {
 
   socket.on('join_room', function(data){
     roomNameRequested = data.roomName;
-    console.log(roomNameRequested);
-    console.log(Object.keys(rooms))
     if(Object.keys(rooms).indexOf(roomNameRequested) != -1){
       let roomRequested = rooms[roomNameRequested]
-      console.log(roomRequested);
       if(roomRequested.password == ""){
-        console.log("noPass")
-        socket.emit("join_response", {status: success});
+        socket.emit("join_response", {status: "success"});
         roomRequested.addUser(socketUser);
+        socketUser.joinRoom(roomNameRequested);
       }
       else{
-        console.log("pass");
-        socket.emit("password_required");
+        socket.emit("join_response", {status: "password_required"});
       }
     }
     else{
-      console.log("fail");
       socket.emit("join_response", {status: "failure", message: "That room doesn't exist"});
     }
   });
 
   socket.on("password_entered", function(data){
-    if(data.password = rooms[roomNameRequested].password){
-      socket.emit("join_response", {status: success});
+    let roomRequested = rooms[roomNameRequested]
+    if(data.password = roomRequested.password){
+      socket.emit("join_response", {status: "success"});
       roomRequested.addUser(socketUser);
+      socketUser.joinRoom(roomNameRequested);
     }
     else{
       socket.emit("join_response", {status: "failure", message: "Incorrect password"});
     }
   });
+
+  socket.on("send_chat", function(data){
+    let recip = data.recipient;
+    let isPrivate = true;
+    if(recip == "Everyone"){
+      recip = socketUser.room
+      isPrivate = false;
+    }
+    io.to(recip).emit("chat_recieved", {
+      sender: socketUser.username,
+      isPrivate: isPrivate,
+      chat_content: data.chat_content
+    })
+  })
+
+  socket.on("people_list", function(){
+
+  });
+
+  mute_request
+  remove_request
+  ban_request
 
   socket.on("showShit", function(data){
     console.log(rooms);
