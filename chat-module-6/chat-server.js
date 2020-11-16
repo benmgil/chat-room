@@ -95,6 +95,7 @@ io.sockets.on("connection", socket => {
   socket.emit("request_username");
   socket.on('login', function(data){
     let requestedUsername = data.username;
+    console.log(data);
     console.log(requestedUsername);
     console.log(Object.keys(users));
     console.log(requestedUsername in Object.keys(users))
