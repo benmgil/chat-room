@@ -193,9 +193,11 @@ function joinRoom(roomName = ""){
       homeScreen.style.display = "none";
       chatScreen.style.display = "block";
       passwordScreen.style.display = "none";
+      roomList.style.display = "none";
     }
     else if(data.status == "password_required"){
       homeScreen.style.display = "none";
+      roomList.style.dislay = "none";
       passwordScreen.style.display = "block";
     }
     else{
