@@ -128,30 +128,32 @@ function setupSockets(){
       peopleList.appendChild(every);
     }
     data.peopleList.forEach(function(person, i){
-      let personP = document.createElement("p");
-      personP.className = "people-list";
-      personP.innerText = person.username;
-      if(requestType == "mute"){
-        personP.addEventListener("click", function(){
-          mutePerson(person.username);
-        });
+      if(person.username != username){
+        let personP = document.createElement("p");
+        personP.className = "people-list";
+        personP.innerText = person.username;
+        if(requestType == "mute"){
+          personP.addEventListener("click", function(){
+            mutePerson(person.username);
+          });
+        }
+        if(requestType == "remove"){
+          personP.addEventListener("click", function(){
+            removePerson(person.username);
+          });
+        }
+        if(requestType == "ban"){
+          personP.addEventListener("click", function(){
+            banPerson(person.username);
+          });
+        }
+        if(requestType == "chat"){
+          personP.addEventListener("click", function(){
+            chatPerson(person.username);
+          });
+        }
+        peopleList.appendChild(personP);
       }
-      if(requestType == "remove"){
-        personP.addEventListener("click", function(){
-          removePerson(person.username);
-        });
-      }
-      if(requestType == "ban"){
-        personP.addEventListener("click", function(){
-          banPerson(person.username);
-        });
-      }
-      if(requestType == "chat"){
-        personP.addEventListener("click", function(){
-          chatPerson(person.username);
-        });
-      }
-      peopleList.appendChild(personP);
     });
   });
 
