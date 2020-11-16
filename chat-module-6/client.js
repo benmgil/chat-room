@@ -6,14 +6,14 @@ let browseScreen;
 let chatScreen;
 
 let errorMessage;
-let loginButton;    
-let loginInput;    
-let roomInput;     
-let joinRoomButton; 
+let loginButton;
+let loginInput;
+let roomInput;
+let joinRoomButton;
 let joinPrivateRoomButton;
-let browseRoomsButton;   
-let createRoomButton;    
-let passwordInput;    
+let browseRoomsButton;
+let createRoomButton;
+let passwordInput;
 let createNameInput;
 let createPasswordInput;
 let createButton;
@@ -125,7 +125,7 @@ function joinRoom(){
     if(data.status == "success"){
       homeScreen.style.display = "none";
       chatScreen.style.disoplay = "block";
-    }  
+    }
     else if(data.status == "password_required"){
       homeScreen.style.display = "none";
       passwordScreen.style.display = "block";
@@ -163,7 +163,7 @@ function toCreateRoom(){
   createScreen.style.display="block";
 }
 
-//creating a new room 
+//creating a new room
 function createRoom(){
   //validating input existence and storing input values
   if(createNameInput.value == ""){
@@ -194,25 +194,24 @@ function createRoom(){
 
 //to browse current rooms
 function toRoomsList(){
-  homeScreen.style.display="none";
-  browseScreen.style.display="block";
-  roomList.innerHTML = "";
+  // homeScreen.style.display="none";
+  // browseScreen.style.display="block";
+  // roomList.innerHTML = "";
 
   socket.emit("showShit");
   //socket.emit("request_rooms_list");
-  socket.on("room_list_response", function(data){ //for each received room, create and add room to room list div
-    data.roomList.forEach(function(room, i){
-      let roomp = document.createElement("p");
-      roomp.className = "room-list";
-      roomp.innerText = data.roomList.roomName;
-      if(data.roomList.isLocked){
-        roomp.innerText += " (locked)";
-      }
-      roomList.appendChild(roomp);
-    })
-  });
+  // socket.on("room_list_response", function(data){ //for each received room, create and add room to room list div
+  //   data.roomList.forEach(function(room, i){
+  //     let roomp = document.createElement("p");
+  //     roomp.className = "room-list";
+  //     roomp.innerText = data.roomList.roomName;
+  //     if(data.roomList.isLocked){
+  //       roomp.innerText += " (locked)";
+  //     }
+  //     roomList.appendChild(roomp);
+  //   })
+  // });
 }
-
 
 function loadPeople(){
   return 0;
