@@ -159,18 +159,19 @@ function setupSockets(){
   socket.on("chat_recieved", function(data){
     console.log("AHAH")
     let chatDiv = document.createElement("div");
+    chatDiv.className = "chat-div";
     let headerP = document.createElement("p");
     let contentP = document.createElement("p");
     contentP.innerText = data.chat_content;
     if(!data.isPrivate){
-      headerP.innerText = "From: " + data.sender;
-      headerP.className = "public";
-      contentP.className = "public";
+      headerP.innerText = "From: " + data.sender + "     To: " + data.recipient;
+      headerP.className = "public header";
+      contentP.className = "public content";
     }
     else{
-      headerP.innerText = "From: " + data.sender + "  (private)";
-      headerP.className = "private";
-      contentP.className = "private";
+      headerP.innerText = "From: " + data.sender + "     To: " + data.recipient + " (private)";
+      headerP.className = "private header";
+      contentP.className = "private content";
     }
     chatDiv.appendChild(headerP);
     chatDiv.appendChild(contentP);
