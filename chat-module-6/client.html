@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <script src="/socket.io/socket.io.js"></script> 
+      <link rel="stylesheet" href="client.css">
+      <script src="/socket.io/socket.io.js"></script>
       <script src="client.js"></script>
    </head>
 
@@ -9,12 +10,12 @@
       <p id="error-message"> </p>
       <div id = "login-screen">
          Username:
-         <input id="username" type="text" maxlength="25"> 
+         <input id="username" type="text" maxlength="25">
          <button id="login">Sign On</button>
       </div>
 
       <div id = "home-screen">
-         <input id="room-name" type="text" maxlength="50" value="Enter Room Name Here"> 
+         <input id="room-name" type="text" maxlength="50" value="Enter Room Name Here">
          <button id="join-room">Join Room</button>
          <button id="browse">Browse Current Rooms</button>
          <button id="create-room">Create New Room</button>
@@ -44,4 +45,3 @@
       </div>
    </body>
 </html>
-

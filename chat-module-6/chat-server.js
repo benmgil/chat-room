@@ -1,15 +1,65 @@
 
 //Static client server initialization
 const http = require("http"),
-    fs = require("fs");
+    fs = require("fs"),
+    url = require('url'),
+    mime = require('mime'),
+    path = require('path');
 const port = 3000;
-const file = "client.html";
+let file = "client.html";
 const server = http.createServer(function (req, res) {
-    fs.readFile(file, function (err, data) {
-        if (err) return res.writeHead(500);
-        res.writeHead(200);
-        res.end(data);
-    });
+    let filename = url.parse(req.url).pathname;
+    if(filename == "/")
+      filename = "/client.html";
+    let filepath = path.join(__dirname, "public", filename);
+    if(filename == "/client.css" || filename == "/client.js" || filename == "/client.html"){
+      fs.readFile(filepath, function (err, data) {
+          if (err) return res.writeHead(500);
+          res.writeHead(200);
+          res.end(data);
+      });
+    }
+    else {
+      res.writeHead(404, {
+				"Content-Type": "text/plain"
+			});
+			res.write("Requested file not found: "+filename);
+			res.end();
+
+    }
+  // var filename = path.join(__dirname, "public", url.parse(req.url).pathname);
+	// (fs.exists || path.exists)(filename, function(exists){
+	// 	if (exists) {
+	// 		fs.readFile(filename, function(err, data){
+	// 			if (err) {
+	// 				// File exists but is not readable (permissions issue?)
+	// 				res.writeHead(500, {
+	// 					"Content-Type": "text/plain"
+	// 				});
+	// 				res.write("Internal server error: could not read file");
+	// 				res.end();
+	// 				return;
+	// 			}
+  //
+	// 			// File exists and is readable
+	// 			var mimetype = mime.getType(filename);
+	// 			res.writeHead(200, {
+	// 				"Content-Type": mimetype
+	// 			});
+	// 			res.write(data);
+	// 			res.end();
+	// 			return;
+	// 		});
+	// 	}else{
+	// 		// File does not exist
+	// 		res.writeHead(404, {
+	// 			"Content-Type": "text/plain"
+	// 		});
+	// 		res.write("Requested file not found: "+filename);
+	// 		res.end();
+	// 		return;
+	// 	}
+	// });
 });
 server.listen(port);
 
@@ -46,7 +96,7 @@ io.sockets.on("connection", socket => {
   });
 
   socket.on('create_room', function (data){
-    if(!(data.roomName in Object.keys(rooms)){
+    if(!(data.roomName in Object.keys(rooms))){
       let room = new Room(data.roomName, socket.user, data.password);
       rooms[data.roomName] = room;
       io.to(socket.id).emit("create_response", {status: "success"})
