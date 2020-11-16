@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function(){
   banButton = document.getElementById("ban");
   peopleList = document.getElementById("ppl-list");
   recipientSpan = document.getElementById("recipient");
-  showRoomatesButton = document.getElementById("show-people");
+  showPeopleButton = document.getElementById("show-people");
   chatInput = document.getElementById("message-input");
   sendButton = document.getElementById("send-button");
 
@@ -78,9 +78,13 @@ document.addEventListener("DOMContentLoaded", function(){
   muteButton.addEventListener("click", requestMute);
   removeButton.addEventListener("click", requestRemove);
   banButton.addEventListener("click", requestBan);
-  showRoomatesButton.addEventListener("click", showPeople);
+  showPeopleButton.addEventListener("click", showPeople);
   sendButton.addEventListener("click", sendChat);
   console.log(sendButton);
+
+  document.getElementById("show-shit").addEventListener("click", function(){
+    socket.emit("showShit");
+  })
 })
 
 //logging in
@@ -234,6 +238,7 @@ function createRoom(){
 
   socket.on("create_response", function(data){
     if(data.status == "success"){
+      adminCommands.style.display = "none";
       createScreen.style.display="none";
       chatScreen.style.display="block";
       errorMessage.innerText = "";
@@ -247,23 +252,26 @@ function createRoom(){
 
 //to browse current rooms
 function toRoomsList(){
-  // homeScreen.style.display="none";
-  // browseScreen.style.display="block";
-  // roomList.innerHTML = "";
+  homeScreen.style.display="none";
+  browseScreen.style.display="block";
+  roomList.innerHTML = "";
 
-  socket.emit("showShit");
-  //socket.emit("request_rooms_list");
-  // socket.on("room_list_response", function(data){ //for each received room, create and add room to room list div
-  //   data.roomList.forEach(function(room, i){
-  //     let roomp = document.createElement("p");
-  //     roomp.className = "room-list";
-  //     roomp.innerText = data.roomList.roomName;
-  //     if(data.roomList.isLocked){
-  //       roomp.innerText += " (locked)";
-  //     }
-  //     roomList.appendChild(roomp);
-  //   })
-  // });
+  socket.emit("request_rooms_list");
+  socket.on("room_list_response", function(data){ //for each received room, create and add room to room list div
+    data.roomList.forEach(function(room, i){
+      let roomp = document.createElement("p");
+      roomp.className = "room-list";
+      roomp.innerText = data.roomList.roomName;
+      if(data.roomList.isLocked){
+        roomp.innerText += " (locked)";
+        roomp.addEventListener("click", joinPrivateRoom);
+      }
+      else{
+        roomp.addEventListener("click", joinRoom);
+      }
+      roomList.appendChild(roomp);
+    })
+  });
 }
 
 function requestMute(){
