@@ -134,19 +134,34 @@ io.sockets.on("connection", socket => {
   socket.on("send_chat", function(data){
     console.log(data);
     let recip = data.recipient;
-    let isPrivate = true;
+    let isPrivate = false;
     console.log(recip);
     console.log(socketUser);
     if(recip == "Everyone"){
-      recip = socketUser.roomName
-      isPrivate = false;
+      io.to(socketUser.roomName).emit("chat_recieved", {
+        sender: socketUser.username,
+        recipient: recip
+        isPrivate: isPrivate,
+        chat_content: data.chat_content
+      })
     }
-    console.log(recip);
-    io.to(recip).emit("chat_recieved", {
-      sender: socketUser.username,
-      isPrivate: isPrivate,
-      chat_content: data.chat_content
-    })
+    else{
+      isPrivate = true;
+      if(users[recip]){
+        users[recip].socket.emit("chat_recieved", {
+          sender: socketUser.username,
+          recipient: recip,
+          isPrivate: isPrivate,
+          chat_content: data.chat_content
+        });
+        socket.emit("chat_recieved", {
+          sender: socketUser.username,
+          recipient: recip,
+          isPrivate: isPrivate,
+          chat_content: data.chat_content
+        });
+      }
+    }
   })
 
   socket.on("request_rooms_list", function(){
@@ -158,7 +173,12 @@ io.sockets.on("connection", socket => {
     socket.emit("room_list_response", {roomList: roomList});
   })
   socket.on("people_list", function(){
-
+    let peopleList = [];
+    for(let u in users){
+      let user = users[u];
+      peopleList.push({username: user.username});
+    }
+    socket.emit("people_response", {peopleList: peopleList});
   });
 
   // mute_request
