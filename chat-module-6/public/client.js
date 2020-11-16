@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function(){
   banButton.addEventListener("click", requestBan);
   showRoomatesButton.addEventListener("click", showPeople);
   sendButton.addEventListener("click", sendChat);
+  console.log(sendButton);
 })
 
 //logging in
@@ -149,11 +150,12 @@ function setupSockets(){
 
   //updating the chat box
   socket.on("chat_recieved", function(data){
+    console.log("AHAH")
     let chatDiv = document.createElement("div");
     let headerP = document.createElement("p");
     let contentP = document.createElement("p");
     contentP.innerText = data.chat_content;
-    if(!isPrivate){
+    if(!data.isPrivate){
       headerP.innerText = "From: " + data.sender;
       headerP.className = "public";
       contentP.className = "public";
@@ -308,12 +310,13 @@ function chatPerson(recipient){
 
 
 function sendChat(){
+  console.log("AH");
   if(chatInput.value == ""){
     errorMessage.innerText = "Error: Please enter a message"
   }
   else{
     errorMessage.innerText = "";
     chatText = chatInput.value;
-    socket.emit("send_chat", {chat_content:chatText, recipient:recipientSpan.value, sender:username})
+    socket.emit("send_chat", {chat_content:chatText, recipient:recipientSpan.innerText, sender:username})
   }
 }
