@@ -149,9 +149,16 @@ io.sockets.on("connection", socket => {
     })
   })
 
-  // socket.on("people_list", function(){
-  //
-  // });
+  socket.on("request_rooms_list", function(){
+    let roomList = [];
+    for(let r in rooms){
+      let room = rooms[r];
+      roomList.push({roomName: room.name, isLocked: room.password != ""})
+    }
+  })
+  socket.on("people_list", function(){
+
+  });
 
   // mute_request
   // remove_request
