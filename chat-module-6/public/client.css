@@ -3,16 +3,16 @@
 }
 
 .private {
-    background-color: rgb(235, 161, 161);
+    background-color: rgb(241, 189, 189);
 }
 .public{
-    background-color: rgb(174, 229, 236);
+    background-color: rgb(192, 237, 243);
 }
 .header{
-    font-size: 12;
+    font-size: 12px
 }
 .content{
-    font-size: 14;
+    font-size: 14px;
 }
 .chat-div{
     border-bottom: 1px solid black;
