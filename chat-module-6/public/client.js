@@ -160,9 +160,9 @@ function setupSockets(){
     console.log("AHAH")
     let chatDiv = document.createElement("div");
     let headerP = document.createElement("p");
-    headerP.className = header;
+    headerP.className = "header";
     let contentP = document.createElement("p");
-    contentP.className = content;
+    contentP.className = "content";
     contentP.innerText = data.chat_content;
     if(!data.isPrivate){
       headerP.innerText = "From: " + data.sender + "     To: " + data.recipient;
