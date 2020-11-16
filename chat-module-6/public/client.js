@@ -155,7 +155,8 @@ function joinRoom(){
   socket.on("join_response", function(data){
     if(data.status == "success"){
       homeScreen.style.display = "none";
-      chatScreen.style.display = "block";
+      chatScreen.style.disoplay = "block";
+      passwordScreen.style.display = "none";
     }
     else if(data.status == "password_required"){
       homeScreen.style.display = "none";
@@ -175,16 +176,6 @@ function joinPrivateRoom(){
   else{
     password = passwordInput.value;
     socket.emit("password_entered", {password:password});
-    socket.on("password_response", function(data){
-      if(data.status == "success"){
-        errorMessage.innerText = "";
-        passwordScreen.style.display = "none";
-        chatScreen.style.display = "block";
-      }
-      else{
-        errorMessage.innerText = data.message;
-      }
-    });
   }
 }
 
