@@ -34,6 +34,7 @@ let username;
 let roomName;
 let password;
 let chatText;
+let requestType;
 
 document.addEventListener("DOMContentLoaded", function(){
   loginScreen = document.getElementById("login-screen");
@@ -87,28 +88,58 @@ function signOn(){
     errorMessage.innerText = "Error: Please enter a username."
   }
   else{
-    username = loginInput.value;
-    loginScreen.style.display="none";
-    homeScreen.style.display="block";
-    errorMessage.innerText = "";
     socket = io.connect();
     socket.on("request_username", function(){
       socket.emit("login", {username:username});
+    })
+    socket.on("login_response", function(data){
+      if(data.status == "success"){
+        username = loginInput.value;
+        loginScreen.style.display="none";
+        homeScreen.style.display="block";
+        errorMessage.innerText = "";
+      }
+      else{
+        errorMessage.innerText = "Error: invalid username";
+      }
     })
     setupSockets();
   }
 }
 
 function setupSockets(){
+
+  //loading the list of people in a room, and adding event listeners depending on why the list is being shown
   socket.on("people_response", function(data){
     data.peopleList.forEach(function(person, i){
       let personP = document.createElement("p");
       personP.className = "people-list";
       personP.innerText = data.peopleList.username;
-      //add event listener
+      if(requestType == "mute"){
+        personP.addEventListener("click", function(){
+          mutePerson(data.peopleList.username);
+        });
+      }
+      if(requestType == "remove"){
+        personP.addEventListener("click", function(){
+          removePerson(data.peopleList.username);
+        });
+      }
+      if(requestType == "ban"){
+        personP.addEventListener("click", function(){
+          banPerson(data.peopleList.username);
+        });
+      }
+      if(requestType == "chat"){
+        personP.addEventListener("click", function(){
+          chatPerson(data.peopleList.username);
+        });
+      }
       peopleList.appendChild(personP);
     });
   });
+
+
 }
 
 //joining room
@@ -213,10 +244,46 @@ function toRoomsList(){
   // });
 }
 
-function loadPeople(){
-  return 0;
+function requestMute(){
+  socket.emit("people_list", {username:username});
+  requestType = "mute";
+  peopleList.style.display="block";
 }
 
-function requestMute(){
-  return 0;
+function requestRemove(){
+  socket.emit("people_list", {username:username});
+  requestType = "remove";
+  peopleList.style.display="block";
+}
+
+function requestBan(){
+  socket.emit("people_list", {username:username});
+  requestType = "ban";
+  peopleList.style.display="block";
+}
+
+function showPeople(){
+  socket.emit("people_list", {username:username});
+  requestType = "chat";
+  peopleList.style.display="block";
+}
+
+function mutePerson(recipient){
+  peopleList.style.display = "none";
+  socket.emit("mute_request", {target_user:recipient})
+}
+
+function removePerson(recipient){
+  peopleList.style.display = "none";
+  socket.emit("remove_request", {target_user:recipient})
+}
+
+function banPerson(recipient){
+  peopleList.style.display = "none";
+  socket.emit("ban_request", {target_user:recipient})
+}
+
+function chatPerson(recipient){
+  peopleList.style.display = "none";
+  recipientSpan.innerText = recipient;
 }
