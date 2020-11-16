@@ -23,7 +23,7 @@ let adminCommands;
 let muteButton;
 let removeButton;
 let banButton;
-let roomatesList;
+let peopleList;
 let recipientSpan;
 let showRoomatesButton;
 let chatInput;
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function(){
   muteButton = document.getElementById("mute");
   removeButton = document.getElementById("remove");
   banButton = document.getElementById("ban");
-  roomatesList = document.getElementById("ppl-list");
+  peopleList = document.getElementById("ppl-list");
   recipientSpan = document.getElementById("recipient");
   showRoomatesButton = document.getElementById("show-people");
   chatInput = document.getElementById("message-input");
@@ -101,8 +101,14 @@ function signOn(){
 
 function setupSockets(){
   socket.on("people_response", function(data){
-    
-  })
+    data.peopleList.forEach(function(person, i){
+      let personP = document.createElement("p");
+      personP.className = "people-list";
+      personP.innerText = data.peopleList.username;
+      //add event listener
+      peopleList.appendChild(personP);
+    });
+  });
 }
 
 //joining room
@@ -207,13 +213,11 @@ function toRoomsList(){
   });
 }
 
-socket.on("people_")
-
 
 function loadPeople(){
-
+  return 0;
 }
 
 function requestMute(){
-
+  return 0;
 }
