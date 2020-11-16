@@ -41,7 +41,7 @@ class User {
   constructor(socket, username){
     this.socket = socket;
     this.username = username;
-    this.room = "";
+    this.roomName = "";
   }
   joinRoom(room){
     this.roomName = room;
@@ -92,6 +92,7 @@ io.sockets.on("connection", socket => {
       rooms[data.roomName] = room;
       io.to(socket.id).emit("create_response", {status: "success"})
       socket.join(data.roomName);
+      socketUser.joinRoom(data.roomName);
     }
     else{
       io.to(socket.id).emit("create_response", {status: "failure", message: "That room name is taken"});
@@ -104,6 +105,7 @@ io.sockets.on("connection", socket => {
       let roomRequested = rooms[roomNameRequested]
       if(roomRequested.password == ""){
         socket.emit("join_response", {status: "success"});
+        socket.join(roomNameRequested);
         roomRequested.addUser(socketUser);
         socketUser.joinRoom(roomNameRequested);
       }
@@ -120,6 +122,7 @@ io.sockets.on("connection", socket => {
     let roomRequested = rooms[roomNameRequested]
     if(data.password = roomRequested.password){
       socket.emit("join_response", {status: "success"});
+      socket.join(roomNameRequested);
       roomRequested.addUser(socketUser);
       socketUser.joinRoom(roomNameRequested);
     }
@@ -129,12 +132,16 @@ io.sockets.on("connection", socket => {
   });
 
   socket.on("send_chat", function(data){
+    console.log(data);
     let recip = data.recipient;
     let isPrivate = true;
+    console.log(recip);
+    console.log(socketUser);
     if(recip == "Everyone"){
-      recip = socketUser.room
+      recip = socketUser.roomName
       isPrivate = false;
     }
+    console.log(recip);
     io.to(recip).emit("chat_recieved", {
       sender: socketUser.username,
       isPrivate: isPrivate,
@@ -142,13 +149,13 @@ io.sockets.on("connection", socket => {
     })
   })
 
-  socket.on("people_list", function(){
+  // socket.on("people_list", function(){
+  //
+  // });
 
-  });
-
-  mute_request
-  remove_request
-  ban_request
+  // mute_request
+  // remove_request
+  // ban_request
 
   socket.on("showShit", function(data){
     console.log(rooms);
