@@ -156,6 +156,7 @@ function setupSockets(){
   socket.on("chat_recieved", function(data){
     console.log("AHAH")
     let chatDiv = document.createElement("div");
+    chatDiv.className = "chat-div";
     let headerP = document.createElement("p");
     let contentP = document.createElement("p");
     contentP.innerText = data.chat_content;

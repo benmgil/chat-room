@@ -1,3 +1,10 @@
 #home-screen, #password-screen, #create-screen, #browse-screen, #chat-screen {
     display: none;
 }
+
+.private {
+    background-color: rgb(235, 161, 161);
+}
+.public{
+    background-color: rgb(174, 229, 236);
+}
