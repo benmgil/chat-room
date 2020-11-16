@@ -140,7 +140,7 @@ io.sockets.on("connection", socket => {
     if(recip == "Everyone"){
       io.to(socketUser.roomName).emit("chat_recieved", {
         sender: socketUser.username,
-        recipient: recip
+        recipient: recip,
         isPrivate: isPrivate,
         chat_content: data.chat_content
       })
