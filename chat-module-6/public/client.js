@@ -90,17 +90,17 @@ function signOn(){
   else{
     socket = io.connect();
     socket.on("request_username", function(){
+      username = loginInput.value;
       socket.emit("login", {username:username});
     })
     socket.on("login_response", function(data){
       if(data.status == "success"){
-        username = loginInput.value;
         loginScreen.style.display="none";
         homeScreen.style.display="block";
         errorMessage.innerText = "";
       }
       else{
-        errorMessage.innerText = "Error: invalid username";
+        errorMessage.innerText = data.message;
       }
     })
     setupSockets();
