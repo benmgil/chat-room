@@ -155,7 +155,7 @@ function joinRoom(){
   socket.on("join_response", function(data){
     if(data.status == "success"){
       homeScreen.style.display = "none";
-      chatScreen.style.disoplay = "block";
+      chatScreen.style.display = "block";
     }
     else if(data.status == "password_required"){
       homeScreen.style.display = "none";
