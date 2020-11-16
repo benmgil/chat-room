@@ -31,7 +31,6 @@ let sendButton;
 
 let socket;
 let username;
-let roomName;
 let password;
 let chatText;
 let requestType;
@@ -70,7 +69,9 @@ document.addEventListener("DOMContentLoaded", function(){
   sendButton = document.getElementById("send-button");
 
   loginButton.addEventListener("click", signOn);
-  joinRoomButton.addEventListener("click", joinRoom)
+  joinRoomButton.addEventListener("click", function(){
+    joinRoom();
+  })
   browseRoomsButton.addEventListener("click", toRoomsList)
   createRoomButton.addEventListener("click", toCreateRoom);
   createButton.addEventListener("click", createRoom)
@@ -116,6 +117,7 @@ function setupSockets(){
 
   //loading the list of people in a room, and adding event listeners depending on why the list is being shown
   socket.on("people_response", function(data){
+    peopleList.innerHTML = "";
     if(requestType == "chat"){
       let every = document.createElement("p");
       every.className = "people-list";
@@ -123,6 +125,7 @@ function setupSockets(){
       every.addEventListener("click", function(){
         chatPerson("Everyone");
       });
+      peopleList.appendChild(every);
     }
     data.peopleList.forEach(function(person, i){
       let personP = document.createElement("p");
@@ -174,10 +177,43 @@ function setupSockets(){
     chatBox.appendChild(chatDiv);
   })
 
+  //join chat room response handler
+  socket.on("join_response", function(data){
+    if(data.status == "success"){
+      adminCommands.style.display = "none";
+      homeScreen.style.display = "none";
+      chatScreen.style.display = "block";
+      passwordScreen.style.display = "none";
+      browseScreen.style.display = "none";
+    }
+    else if(data.status == "password_required"){
+      homeScreen.style.display = "none";
+      browseScreen.style.display = "none";
+      passwordScreen.style.display = "block";
+    }
+    else{
+      errorMessage.innerText= data.message;
+    }
+  })
+
+  //create chat room response handler
+  socket.on("create_response", function(data){
+    if(data.status == "success"){
+      adminCommands.style.display = "none";
+      createScreen.style.display="none";
+      chatScreen.style.display="block";
+      errorMessage.innerText = "";
+    }
+    else{
+      errorMessage.innerText = data.message;
+    }
+  })
+
 }
 
 //joining room
 function joinRoom(roomName = ""){
+  console.log(roomName);
   if(roomInput.value == "" && roomName == ""){
     errorMessage.innerText = "Error: Please enter a room name."
   }
@@ -185,25 +221,10 @@ function joinRoom(roomName = ""){
     if(roomName == "")
       roomName = roomInput.value;
     errorMessage.innerText = "";
-    socket.emit("join_room", {roomName:roomName});
+    console.log(roomInput.value);
+    console.log(roomName);
+    socket.emit("join_room", {roomName: roomName});
   }
-  socket.on("join_response", function(data){
-    if(data.status == "success"){
-      adminCommands.style.display = "none";
-      homeScreen.style.display = "none";
-      chatScreen.style.display = "block";
-      passwordScreen.style.display = "none";
-      roomList.style.display = "none";
-    }
-    else if(data.status == "password_required"){
-      homeScreen.style.display = "none";
-      roomList.style.dislay = "none";
-      passwordScreen.style.display = "block";
-    }
-    else{
-      errorMessage.innerText= data.message;
-    }
-  })
 }
 
 //joining private room
@@ -230,26 +251,19 @@ function createRoom(){
     errorMessage.innerText = "Error: Please enter a room name."
   }
   else{
-    roomName = createNameInput.value;
-  }
-  if( !(createPasswordInput.value == "") ){
-    password = createPasswordInput.value;
+    let roomName = createNameInput.value;
+
+    if( !(createPasswordInput.value == "") ){
+      password = createPasswordInput.value;
+    }
+    //send info to server
+    socket.emit("create_room", { roomName:roomName, password:password});
   }
 
-  //send info to server
-  socket.emit("create_room", { roomName:roomName, password:password});
 
-  socket.on("create_response", function(data){
-    if(data.status == "success"){
-      adminCommands.style.display = "none";
-      createScreen.style.display="none";
-      chatScreen.style.display="block";
-      errorMessage.innerText = "";
-    }
-    else{
-      errorMessage.innerText = data.message;
-    }
-  })
+
+
+
 
 }
 
