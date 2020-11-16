@@ -155,6 +155,7 @@ io.sockets.on("connection", socket => {
       let room = rooms[r];
       roomList.push({roomName: room.name, isLocked: room.password != ""})
     }
+    socket.emit("room_list_response", {roomList: roomList});
   })
   socket.on("people_list", function(){
 

@@ -127,25 +127,25 @@ function setupSockets(){
     data.peopleList.forEach(function(person, i){
       let personP = document.createElement("p");
       personP.className = "people-list";
-      personP.innerText = data.peopleList.username;
+      personP.innerText = person.username;
       if(requestType == "mute"){
         personP.addEventListener("click", function(){
-          mutePerson(data.peopleList.username);
+          mutePerson(person.username);
         });
       }
       if(requestType == "remove"){
         personP.addEventListener("click", function(){
-          removePerson(data.peopleList.username);
+          removePerson(person.username);
         });
       }
       if(requestType == "ban"){
         personP.addEventListener("click", function(){
-          banPerson(data.peopleList.username);
+          banPerson(person.username);
         });
       }
       if(requestType == "chat"){
         personP.addEventListener("click", function(){
-          chatPerson(data.peopleList.username);
+          chatPerson(person.username);
         });
       }
       peopleList.appendChild(personP);
@@ -178,12 +178,13 @@ function setupSockets(){
 }
 
 //joining room
-function joinRoom(){
-  if(roomInput.value == ""){
+function joinRoom(roomName = ""){
+  if(roomInput.value == "" && roomName == ""){
     errorMessage.innerText = "Error: Please enter a room name."
   }
   else{
-    roomName = roomInput.value;
+    if(roomName == "")
+      roomName = roomInput.value;
     errorMessage.innerText = "";
     socket.emit("join_room", {roomName:roomName});
   }
@@ -264,14 +265,14 @@ function toRoomsList(){
     data.roomList.forEach(function(room, i){
       let roomp = document.createElement("p");
       roomp.className = "room-list";
-      roomp.innerText = data.roomList.roomName;
-      if(data.roomList.isLocked){
+      roomp.innerText = room.roomName;
+      if(room.isLocked){
         roomp.innerText += " (locked)";
-        roomp.addEventListener("click", joinPrivateRoom);
       }
-      else{
-        roomp.addEventListener("click", joinRoom);
-      }
+      roomp.addEventListener("click", function(){
+        joinRoom(room.roomName);
+      });
+
       roomList.appendChild(roomp);
     })
   });
