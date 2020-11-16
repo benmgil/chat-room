@@ -38,9 +38,13 @@
       </div>
 
       <div id = "chat-screen">
+         <div id="chatlog"></div> <!-- displays chat history -->
+         <p id="admin-commands"> <button id="mute">Mute a Participant</button> 
+            <button id="remove">Remove a Participant</button> <button id="ban">Ban a Participant</button></p>
+         <div id="ppl-list"></div> <!-- displays list of participants -->
+         <p>To: <span id="recipient">Everyone</span> <button id="show-people">^</button></p>
          <input type=text id="message_input"/>
          <button id="send-button">send</button>
-         <div id="chatlog"></div>
       </div>
    </body>
 </html>
