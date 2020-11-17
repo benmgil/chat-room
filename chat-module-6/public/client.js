@@ -381,9 +381,14 @@ function requestUnban(){
 
 //the show ppl button is clicked
 function showPeople(){
-  socket.emit("people_list");
-  requestType = "chat";
-  peopleList.style.display="block";
+  if(peopleList.style.display == "none"){
+    socket.emit("people_list");
+    requestType = "chat";
+    peopleList.style.display = "block";
+  }
+  else{
+    peopleList.style.display = "none";
+  }
 }
 
 //when admin clicks on user to mute
