@@ -34,6 +34,7 @@ let mutedP;
 let leaveButton;
 let closeButton;
 let roomSpan;
+let backButton;
 
 let socket;
 let username;
@@ -79,7 +80,8 @@ document.addEventListener("DOMContentLoaded", function(){
   mutedP = document.getElementById("muted");
   leaveButton = document.getElementById("leave-room");
   closeButton = document.getElementById("close");
-  target_useran = document.getElementById("room-name");
+  roomSpan = document.getElementById("room-name");
+  backButton = document.getElementById("browse-back");
 
   loginButton.addEventListener("click", signOn);
   joinRoomButton.addEventListener("click", function(){
@@ -97,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function(){
   sendButton.addEventListener("click", sendChat);
   leaveButton.addEventListener("click", leaveRequest);
   closeButton.addEventListener("click", closeMenu);
+  backButton.addEventListener("click", backToHome)
 
   //pressing enter on message box sends the message
   //citation: https://www.w3schools.com/howto/howto_js_trigger_button_enter.asp
@@ -115,6 +118,12 @@ function closeMenu(){
   peopleList.style.display = "none";
   chattingBox.style.display = "block";
   pplListShown = !pplListShown;
+}
+
+//going back to home screen from browse screen
+function backToHome(){
+  browseRoomsButton.style.display = "none";
+  homeScreen.style.display = "block";
 }
 
 //logging in
@@ -254,11 +263,10 @@ function setupSockets(){
 
   //join chat room response handler
   socket.on("join_response", function(data){
-    console.log(data);
     errorMessage.innerText = "";
     if(data.status == "success"){
       adminCommands.style.display = "none";
-      leaveButton.innerText += " (" + data.roomName + ")";
+      roomSpan.innerText = data.roomName;
       homeScreen.style.display = "none";
       chatScreen.style.display = "block";
       passwordScreen.style.display = "none";
@@ -277,10 +285,9 @@ function setupSockets(){
 
   //create chat room response handler
   socket.on("create_response", function(data){
-    console.log(data);
     errorMessage.innerText = "";
     if(data.status == "success"){
-      leaveButton.innerText += " (" + data.roomName + ")";
+      roomSpan.innerText = data.roomName;
       adminCommands.style.display = "block";
       createScreen.style.display="none";
       chatScreen.style.display="block";
