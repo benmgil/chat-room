@@ -23,6 +23,7 @@ let adminCommands;
 let muteButton;
 let removeButton;
 let banButton;
+let unbanButton;
 let peopleList;
 let recipientSpan;
 let showRoomatesButton;
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function(){
   muteButton = document.getElementById("mute");
   removeButton = document.getElementById("remove");
   banButton = document.getElementById("ban");
+  unbanButton = document.getElementById("unban");
   peopleList = document.getElementById("ppl-list");
   recipientSpan = document.getElementById("recipient");
   showPeopleButton = document.getElementById("show-people");
@@ -83,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function(){
   muteButton.addEventListener("click", requestMute);
   removeButton.addEventListener("click", requestRemove);
   banButton.addEventListener("click", requestBan);
+  unbanButton.addEventListener("click", requestUnban);
   showPeopleButton.addEventListener("click", showPeople);
   sendButton.addEventListener("click", sendChat);
   console.log(sendButton);
@@ -122,6 +125,7 @@ function setupSockets(){
   //loading the list of people in a room, and adding event listeners depending on why the list is being shown
   socket.on("people_response", function(data){
     peopleList.innerHTML = "";
+    //if its for chatting purposes, add the "everyone" option
     if(requestType == "chat"){
       let every = document.createElement("p");
       every.className = "people-list";
@@ -131,6 +135,7 @@ function setupSockets(){
       });
       peopleList.appendChild(every);
     }
+    //adding the appropriate event listener types depending on the purpose of the list being shown
     data.peopleList.forEach(function(person, i){
       if(person.username != username){
         let personP = document.createElement("p");
@@ -213,7 +218,7 @@ function setupSockets(){
   //create chat room response handler
   socket.on("create_response", function(data){
     if(data.status == "success"){
-      adminCommands.style.display = "none";
+      adminCommands.style.display = "block";
       createScreen.style.display="none";
       chatScreen.style.display="block";
       errorMessage.innerText = "";
@@ -223,38 +228,44 @@ function setupSockets(){
     }
   })
 
+  //when non-admin attempts admin controls
   socket.on("access_denied", function(){
     alert("You do not have access to this action.");
   })
 
+  //if admin control request failed
   socket.on("admin_control_response", function(data){
     if(data.status == "failure"){
       alert(data.message);
     }
   })
 
+  //if user is muted
   socket.on("muted", function(){
-    chattingBox.style.dispay = "none";
+    chattingBox.style.display = "none";
     mutedP.style.display = "block";
   })
 
+  //if user is unmuted
   socket.on("unmuted", function(){
-    chattingBox.style.dispay = "block";
+    chattingBox.style.display = "block";
     mutedP.style.display = "unmute";
   })
 
+  //if user is removed from room
   socket.on("removed", function(){
     window.location.reload(true);
     alert("You have been removed from the room.");
   })
 
+  //if user is banned from room
   socket.on("banned", function(){
     window.location.reload(true);
     alert("You have been banned from the room.");
   })
 }
 
-//joining room
+//requesting to join a room
 function joinRoom(roomName = ""){
   console.log(roomName);
   if(roomInput.value == "" && roomName == ""){
@@ -270,7 +281,7 @@ function joinRoom(roomName = ""){
   }
 }
 
-//joining private room
+//joining a private room
 function joinPrivateRoom(){
   if(passwordInput.value == ""){
     errorMessage.innerText = "Error: Please enter a password."
@@ -302,11 +313,6 @@ function createRoom(){
     //send info to server
     socket.emit("create_room", { roomName:roomName, password:password});
   }
-
-
-
-
-
 
 }
 
@@ -349,6 +355,12 @@ function requestRemove(){
 function requestBan(){
   socket.emit("people_list");
   requestType = "ban";
+  peopleList.style.display="block";
+}
+
+function requestUnban(){
+  socket.emit("ban_list");
+  requestType = "unban";
   peopleList.style.display="block";
 }
 
