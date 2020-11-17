@@ -12,6 +12,8 @@ const server = http.createServer(function (req, res) {
     if(filename == "/")
       filename = "/client.html";
     let filepath = path.join(__dirname, "public", filename);
+
+    //only send the three files needed
     if(filename == "/client.css" || filename == "/client.js" || filename == "/client.html"){
       fs.readFile(filepath, function (err, data) {
           if (err) return res.writeHead(500);
@@ -19,7 +21,7 @@ const server = http.createServer(function (req, res) {
           res.end(data);
       });
     }
-    else {
+    else {   //or a 404
       res.writeHead(404, {
 				"Content-Type": "text/plain"
 			});
@@ -34,8 +36,10 @@ server.listen(port);
 const socketio = require("socket.io")(server);
 const io = socketio.listen(server);
 
+//global storage for users and rooms
 let users = {};
 let rooms = {};
+
 
 class User {
   constructor(socket, username){
@@ -47,6 +51,8 @@ class User {
     this.roomName = room;
   }
 }
+
+//room class for ease of various room operations
 class Room {
   constructor(name, admin, password){
     this.name = name;
@@ -59,37 +65,64 @@ class Room {
   addUser(user){
     this.users.push(user);
   }
+  removeUser(username){
+    var index = this.users.indexOf(username);
+    if (index !== -1) {
+      this.users.splice(index, 1);
+    }
+  }
+  banUser(username){
+    if(username not in this.bannedUsers){
+      this.bannedUsers.push(username);
+      removeUser(username);
+    }
+  }
+  muteUser(username){
+    if(username not in this.mutedUsers){
+      this.mutedUsers.push(username)
+    }
+  }
 }
 
 
 
 io.sockets.on("connection", socket => {
+  //global variables for each socket connection
   let roomNameRequested;
   let socketUser;
+
+  //ask for the username
   socket.emit("request_username");
-  socket.on('login', function(data){
+
+
+  socket.on('login', function(data){ //when the user attempts to log in
     let requestedUsername = data.username;
+
+    //make sure the username isn't already taken
     if(Object.keys(users).indexOf(requestedUsername) != -1){
       socket.emit("login_response",{status: "failure", message: "Username already in use"})
     }
     else{
+      //add the user to the user list and send a success
       socketUser = new User(socket, requestedUsername);
       users[requestedUsername] = socketUser;
       socket.emit("login_response", {status: "success"});
     }
-    // console.log(data.username);
-    // socketUser.setUsername(data.username)
   });
 
+  //when the user requests to create a room
   socket.on('create_room', function (data){
-    //console.log(socketUser);
+    //make sure the room name isn't taken
     if(Object.keys(rooms).indexOf(data.roomName) == -1){
       let pass = data.password;
       if(!pass){
         pass = "";
       }
+      //create a new room object with the creator as admin
       let room = new Room(data.roomName, socketUser, pass);
       rooms[data.roomName] = room;
+
+      //send a success and add the socket to the room
       io.to(socket.id).emit("create_response", {status: "success"})
       socket.join(data.roomName);
       socketUser.joinRoom(data.roomName);
@@ -99,18 +132,27 @@ io.sockets.on("connection", socket => {
     }
   })
 
+  //when the user requests to join a room
   socket.on('join_room', function(data){
     roomNameRequested = data.roomName;
+
+    //make sure the room exists
     if(Object.keys(rooms).indexOf(roomNameRequested) != -1){
       let roomRequested = rooms[roomNameRequested]
-      if(roomRequested.password == ""){
-        socket.emit("join_response", {status: "success"});
-        socket.join(roomNameRequested);
-        roomRequested.addUser(socketUser);
-        socketUser.joinRoom(roomNameRequested);
+      if(socketUser.username not in roomRequested.bannedUsers){ //make sure the user isn't banned
+        if(roomRequested.password == ""){ //if there's no password let them join
+          socket.emit("join_response", {status: "success"});
+          socket.join(roomNameRequested);
+          roomRequested.addUser(socketUser);
+          socketUser.joinRoom(roomNameRequested);
+        }
+        else{
+          //if not, let them know there's a password
+          socket.emit("join_response", {status: "password_required"});
+        }
       }
-      else{
-        socket.emit("join_response", {status: "password_required"});
+      else{ 
+        socket.emit("join_response", {status: "failure", message: "You are banned from this group"})
       }
     }
     else{
@@ -132,34 +174,34 @@ io.sockets.on("connection", socket => {
   });
 
   socket.on("send_chat", function(data){
-    console.log(data);
-    let recip = data.recipient;
-    let isPrivate = false;
-    console.log(recip);
-    console.log(socketUser);
-    if(recip == "Everyone"){
-      io.to(socketUser.roomName).emit("chat_recieved", {
-        sender: socketUser.username,
-        recipient: recip,
-        isPrivate: isPrivate,
-        chat_content: data.chat_content
-      })
-    }
-    else{
-      isPrivate = true;
-      if(users[recip]){
-        users[recip].socket.emit("chat_recieved", {
+    let room = rooms[socketUser.roomName];
+    if(socketUser.username not in room.mutedUsers){
+      let recip = data.recipient;
+      let isPrivate = false;
+      if(recip == "Everyone"){
+        io.to(socketUser.roomName).emit("chat_recieved", {
           sender: socketUser.username,
           recipient: recip,
           isPrivate: isPrivate,
           chat_content: data.chat_content
-        });
-        socket.emit("chat_recieved", {
-          sender: socketUser.username,
-          recipient: recip,
-          isPrivate: isPrivate,
-          chat_content: data.chat_content
-        });
+        })
+      }
+      else{
+        isPrivate = true;
+        if(users[recip]){
+          users[recip].socket.emit("chat_recieved", {
+            sender: socketUser.username,
+            recipient: recip,
+            isPrivate: isPrivate,
+            chat_content: data.chat_content
+          });
+          socket.emit("chat_recieved", {
+            sender: socketUser.username,
+            recipient: recip,
+            isPrivate: isPrivate,
+            chat_content: data.chat_content
+          });
+        }
       }
     }
   })
@@ -174,11 +216,85 @@ io.sockets.on("connection", socket => {
   })
   socket.on("people_list", function(){
     let peopleList = [];
+    let room = rooms[socketUser.roomName];
+    let users = room.users;
     for(let u in users){
       let user = users[u];
       peopleList.push({username: user.username});
     }
     socket.emit("people_response", {peopleList: peopleList});
+  });
+
+  socket.on("remove_request", function(data){
+    let room = rooms[socketUser.roomName];
+    if (socketUser == room.admin){
+      let target = data.targetUser;
+      if(target in room.users){
+        socket.emit("admin_control_response",{
+          status: "success",
+          action: "remove"
+        })
+        users[target].socket.emit("removed");
+        room.removeUser(target);
+      }
+      else{
+        socket.emit("admin_control_response",{
+          status: "failure",
+          message: "Target user not in room"
+        })
+      }
+    }
+    else{
+      socket.emit("access_denied");
+    }
+  });
+
+  socket.on("ban_request", function(data){
+    let room = rooms[socketUser.roomName];
+    if (socketUser == room.admin){
+      let target = data.targetUser;
+      if(target in room.users){
+        socket.emit("admin_control_response",{
+          status: "success",
+          action: "ban"
+        })
+        users[target].socket.emit("banned");
+        room.banUser(target);
+      }
+      else{
+        socket.emit("admin_control_response",{
+          status: "failure",
+          message: "Target user not in room"
+        })
+      }
+    }
+    else{
+      socket.emit("access_denied");
+    }
+  });
+
+  socket.on("mute_request", function(data){
+    let room = rooms[socketUser.roomName];
+    if (socketUser == room.admin){
+      let target = data.targetUser;
+      if(target in room.users){
+        socket.emit("admin_control_response",{
+          status: "success",
+          action: "mute"
+        })
+        users[target].socket.emit("muted");
+        room.muteUser(target);
+      }
+      else{
+        socket.emit("admin_control_response",{
+          status: "failure",
+          message: "Target user not in room"
+        })
+      }
+    }
+    else{
+      socket.emit("access_denied");
+    }
   });
 
   // mute_request
