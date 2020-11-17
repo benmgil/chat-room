@@ -72,13 +72,13 @@ class Room {
     }
   }
   banUser(username){
-    if(!(username in this.bannedUsers)){
+    if(this.bannedUsers.indexOf(username) == -1){
       this.bannedUsers.push(username);
       removeUser(username);
     }
   }
   muteUser(username){
-    if(!(username in this.mutedUsers)){
+    if(this.mutedUsers.indexOf(username) == -1){
       this.mutedUsers.push(username)
     }
   }
@@ -146,7 +146,8 @@ io.sockets.on("connection", socket => {
     //make sure the room exists
     if(Object.keys(rooms).indexOf(roomNameRequested) != -1){
       let roomRequested = rooms[roomNameRequested]
-      if(!(socketUser.username in roomRequested.bannedUsers)){ //make sure the user isn't banned
+       //make sure the user isn't banned
+      if(roomRequested.bannedUsers.indexOf(socketUser.username) == -1){
         if(roomRequested.password == ""){ //if there's no password let them join
           socket.emit("join_response", {status: "success"});
           socket.join(roomNameRequested);
@@ -185,7 +186,7 @@ io.sockets.on("connection", socket => {
     let room = rooms[socketUser.roomName];
 
     //if the user hasn't been muted
-    if(!(socketUser.username in room.mutedUsers)){
+    if(room.mutedUsers.indexOf(socketUser.username) == -1){
       let recip = data.recipient;
       let isPrivate = false;
       if(recip == "Everyone"){
@@ -238,13 +239,14 @@ io.sockets.on("connection", socket => {
   socket.on("remove_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
-      let target = data.targetUser;
-      if(target in room.users){
+      let target = data.target_user;
+      let targetUser = users[target];
+      if(room.users.indexOf(targetUser) != -1){
         socket.emit("admin_control_response",{
           status: "success",
           action: "remove"
         })
-        users[target].socket.emit("removed");
+        targetUser.socket.emit("removed");
         room.removeUser(target);
       }
       else{
@@ -262,13 +264,14 @@ io.sockets.on("connection", socket => {
   socket.on("ban_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
-      let target = data.targetUser;
-      if(target in room.users){
+      let target = data.target_user;
+      let targetUser = users[target];
+      if(room.users.indexOf(targetUser) != -1){
         socket.emit("admin_control_response",{
           status: "success",
           action: "ban"
         })
-        users[target].socket.emit("banned");
+        targetUser.socket.emit("banned");
         room.banUser(target);
       }
       else{
@@ -286,13 +289,16 @@ io.sockets.on("connection", socket => {
   socket.on("mute_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
-      let target = data.targetUser;
-      if(target in room.users){
+      let target = data.target_user;
+      let targetUser = users[target];
+      console.log(room);
+      console.log(room.users);
+      if(room.users.indexOf(targetUser) != -1){
         socket.emit("admin_control_response",{
           status: "success",
           action: "mute"
         })
-        users[target].socket.emit("muted");
+        targetUser.socket.emit("muted");
         room.muteUser(target);
       }
       else{
@@ -310,13 +316,14 @@ io.sockets.on("connection", socket => {
   socket.on("unmute_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
-      let target = data.targetUser;
-      if(target in room.users){
+      let target = data.target_user;
+      let targetUser = users[target];
+      if(room.users.indexOf(targetUser) != -1){
         socket.emit("admin_control_response",{
           status: "success",
           action: "unmute"
         })
-        users[target].socket.emit("unmuted");
+        targetUser.socket.emit("unmuted");
         room.unmuteUser(target);
       }
       else{
