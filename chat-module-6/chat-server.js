@@ -72,15 +72,22 @@ class Room {
     }
   }
   banUser(username){
-    if(username not in this.bannedUsers){
+    if(!(username in this.bannedUsers)){
       this.bannedUsers.push(username);
       removeUser(username);
     }
   }
   muteUser(username){
-    if(username not in this.mutedUsers){
+    if(!(username in this.mutedUsers)){
       this.mutedUsers.push(username)
     }
+  }
+  unmuteUser(username){
+    var index = this.mutedUsers.indexOf(username);
+    if (index !== -1) {
+      this.mutedUsers.splice(index, 1);
+    }
+
   }
 }
 
@@ -139,43 +146,46 @@ io.sockets.on("connection", socket => {
     //make sure the room exists
     if(Object.keys(rooms).indexOf(roomNameRequested) != -1){
       let roomRequested = rooms[roomNameRequested]
-      if(socketUser.username not in roomRequested.bannedUsers){ //make sure the user isn't banned
+      if(!(socketUser.username in roomRequested.bannedUsers)){ //make sure the user isn't banned
         if(roomRequested.password == ""){ //if there's no password let them join
           socket.emit("join_response", {status: "success"});
           socket.join(roomNameRequested);
           roomRequested.addUser(socketUser);
           socketUser.joinRoom(roomNameRequested);
         }
-        else{
-          //if not, let them know there's a password
+        else{  //if not, let them know there's a password
           socket.emit("join_response", {status: "password_required"});
         }
       }
-      else{ 
+      else{ // tell them they're banned
         socket.emit("join_response", {status: "failure", message: "You are banned from this group"})
       }
     }
-    else{
+    else{  //tell them the room doesn't exist
       socket.emit("join_response", {status: "failure", message: "That room doesn't exist"});
     }
   });
 
+  //when the user sends a room password
   socket.on("password_entered", function(data){
     let roomRequested = rooms[roomNameRequested]
-    if(data.password = roomRequested.password){
+    if(data.password = roomRequested.password){ //if it's right let them in
       socket.emit("join_response", {status: "success"});
       socket.join(roomNameRequested);
       roomRequested.addUser(socketUser);
       socketUser.joinRoom(roomNameRequested);
     }
-    else{
+    else{ // if not then don't
       socket.emit("join_response", {status: "failure", message: "Incorrect password"});
     }
   });
 
+  //when a user sends a message
   socket.on("send_chat", function(data){
     let room = rooms[socketUser.roomName];
-    if(socketUser.username not in room.mutedUsers){
+
+    //if the user hasn't been muted
+    if(!(socketUser.username in room.mutedUsers)){
       let recip = data.recipient;
       let isPrivate = false;
       if(recip == "Everyone"){
@@ -296,6 +306,30 @@ io.sockets.on("connection", socket => {
       socket.emit("access_denied");
     }
   });
+
+  socket.on("unmute_request", function(data){
+    let room = rooms[socketUser.roomName];
+    if (socketUser == room.admin){
+      let target = data.targetUser;
+      if(target in room.users){
+        socket.emit("admin_control_response",{
+          status: "success",
+          action: "unmute"
+        })
+        users[target].socket.emit("unmuted");
+        room.unmuteUser(target);
+      }
+      else{
+        socket.emit("admin_control_response",{
+          status: "failure",
+          message: "Target user not in room"
+        })
+      }
+    }
+    else{
+      socket.emit("access_denied");
+    }
+  })
 
   // mute_request
   // remove_request
