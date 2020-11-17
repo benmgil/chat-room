@@ -1,3 +1,6 @@
+body{
+  font-family: Arial;
+}
 #screen-container {
   text-align: center;
   height: 100vh;
@@ -11,16 +14,33 @@
     display:none;
 }
 
-#username{
-  margin: 10px;
-  margin-bottom: 20px;
-}
+
 button {
+  font-size: 1.3em;
   border: 1px solid black;
   border-radius: 5px;
   background: none;
   box-shadow: none;
-  border-radius: 0px;
+  margin: 10px;
+}
+#username{
+  margin: 10px;
+  font-size: 1.4em;
+}
+#room-name{
+  font-size: 1.4em;
+  margin: 10px;
+  text-align: center;
+}
+#browse-title{
+  text-decoration: underline;
+}
+.room-list {
+  width: 40%;
+  border: 1px solid black;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .private {
     background-color: rgb(241, 189, 189);
