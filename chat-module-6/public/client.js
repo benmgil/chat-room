@@ -301,6 +301,7 @@ function setupSockets(){
   socket.on("unmuted", function(){
     errorMessage.innerText = "";
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
     mutedP.style.display = "none";
   })
 
@@ -447,6 +448,7 @@ function showPeople(){
     peopleList.style.display = "none";
     pplListShown = !pplListShown;
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
   }
 }
 
@@ -456,6 +458,7 @@ function mutePerson(recipient){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
   }
   socket.emit("mute_request", {target_user:recipient})
 }
@@ -466,6 +469,7 @@ function unmutePerson(recipient){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
   }
   socket.emit("unmute_request", {target_user:recipient})
 }
@@ -476,6 +480,7 @@ function removePerson(recipient){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
   }
   socket.emit("remove_request", {target_user:recipient})
 }
@@ -486,6 +491,7 @@ function banPerson(recipient){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
   }
   socket.emit("ban_request", {target_user:recipient})
 }
@@ -496,6 +502,7 @@ function unbanPerson(recipient){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
   }
   socket.emit("unban_request", {target_user:recipient})
 }
@@ -506,6 +513,7 @@ function chatPerson(recipient){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
     chattingBox.style.display = "block";
+    closeButton.style.display = "none";
   }
   recipientSpan.innerText = recipient;
 }
