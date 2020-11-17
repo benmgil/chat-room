@@ -317,12 +317,13 @@ io.sockets.on("connection", socket => {
     }
   });
 
-  //bannin user from room and sending success/failure from admin end and from user end
+  //banning user from room and sending success/failure from admin end and from user end
   socket.on("ban_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
+      //if user is in room, send success 
       if(room.users.indexOf(targetUser) != -1){
         room.banUser(target);
         socket.emit("admin_control_response",{
@@ -331,6 +332,7 @@ io.sockets.on("connection", socket => {
         })
         targetUser.socket.emit("banned");
       }
+      //if not, send failure
       else{
         socket.emit("admin_control_response",{
           status: "failure",
@@ -343,9 +345,10 @@ io.sockets.on("connection", socket => {
     }
   });
 
-
+  //responding to unban request
   socket.on("unban_request", function(data){
     let room = rooms[socketUser.roomName];
+    //if request is from admin, send success
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
@@ -360,12 +363,13 @@ io.sockets.on("connection", socket => {
     }
   });
 
-
+  //muting user from room and sending success/failure from admin end and from user end
   socket.on("mute_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
+      //if user is in room, send success
       if(room.users.indexOf(targetUser) != -1){
         room.muteUser(target);
         socket.emit("admin_control_response",{
@@ -374,6 +378,7 @@ io.sockets.on("connection", socket => {
         })
         targetUser.socket.emit("muted");
       }
+      //else, send failire
       else{
         socket.emit("admin_control_response",{
           status: "failure",
@@ -381,16 +386,19 @@ io.sockets.on("connection", socket => {
         })
       }
     }
+    //if not admin, send failure
     else{
       socket.emit("access_denied");
     }
   });
 
+  //unmuting user
   socket.on("unmute_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
+      //if theyre in the room, send success
       if(room.users.indexOf(targetUser) != -1){
         room.unmuteUser(target);
         socket.emit("admin_control_response",{
@@ -399,6 +407,7 @@ io.sockets.on("connection", socket => {
         })
         targetUser.socket.emit("unmuted");
       }
+      //if not, send failure
       else{
         socket.emit("admin_control_response",{
           status: "failure",
@@ -406,11 +415,13 @@ io.sockets.on("connection", socket => {
         })
       }
     }
+    //if not admin, send failure
     else{
       socket.emit("access_denied");
     }
   })
 
+  //remove user from room's user list
   socket.on("user_left", function(){
     let room = rooms[socketUser.roomName];
     room.removeUser(socketUser.username);
@@ -419,6 +430,7 @@ io.sockets.on("connection", socket => {
 
   })
 
+  //when user disconnects, remove associated data
   socket.on("disconnect", function(){
     if(typeof socketUser !== 'undefined' && typeof socketUser.username !== 'undefined'){
       if(typeof socketUser.roomName !== 'undefined' && socketUser.roomName != ""){
