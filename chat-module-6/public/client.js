@@ -308,14 +308,16 @@ function setupSockets(){
   socket.on("removed", function(){
     errorMessage.innerText = "";
     alert("You have been removed from the room.");
-    window.location.reload(true);
+    chatScreen.style.display = "none";
+    homeScreen.style.display = "block";
   })
 
   //if user is banned from room
   socket.on("banned", function(){
     errorMessage.innerText = "";
     alert("You have been banned from the room.");
-    window.location.reload(true);
+    chatScreen.style.display = "none";
+    homeScreen.style.display = "block";
   })
 
   //when user leaves room
