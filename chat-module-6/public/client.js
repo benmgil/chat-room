@@ -32,6 +32,7 @@ let sendButton;
 let chattingBox;
 let mutedP;
 let leaveButton;
+let closeButton;
 
 let socket;
 let username;
@@ -76,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function(){
   chattingBox = document.getElementById("chat-box");
   mutedP = document.getElementById("muted");
   leaveButton = document.getElementById("leave-room");
+  closeButton = document.getElementById("close");
 
   loginButton.addEventListener("click", signOn);
   joinRoomButton.addEventListener("click", function(){
@@ -92,8 +94,17 @@ document.addEventListener("DOMContentLoaded", function(){
   showPeopleButton.addEventListener("click", showPeople);
   sendButton.addEventListener("click", sendChat);
   leaveButton.addEventListener("click", leaveRequest);
+  closeButton.addEventListener("click", closeMenu);
 
 })
+
+//close menu of ppl
+function closeMenu(){
+  closeButton.style.display = "none";
+  peopleList.style.display = "none";
+  sendButton.style.display = "block";
+  chatInput.style.display = "block";
+}
 
 //logging in
 function signOn(){
@@ -376,6 +387,7 @@ function requestMute(){
   requestType = "mute";
   if(!pplListShown){
     peopleList.style.display="block";
+    closeButton.style.display = "block";
     pplListShown = !pplListShown;
     chatInput.style.display = "none";
     sendButton.style.display = "none";
@@ -388,6 +400,7 @@ function requestRemove(){
   requestType = "remove";
   if(!pplListShown){
     peopleList.style.display="block";
+    closeButton.style.display = "block";
     pplListShown = !pplListShown;
     chatInput.style.display = "none";
     sendButton.style.display = "none";
@@ -400,6 +413,7 @@ function requestBan(){
   requestType = "ban";
   if(!pplListShown){
     peopleList.style.display="block";
+    closeButton.style.display = "block";
     pplListShown = !pplListShown;
     chatInput.style.display = "none";
     sendButton.style.display = "none";
@@ -412,6 +426,7 @@ function requestUnban(){
   requestType = "unban";
   if(!pplListShown){
     peopleList.style.display="block";
+    closeButton.style.display = "block";
     pplListShown = !pplListShown;
     chatInput.style.display = "none";
     sendButton.style.display = "none";
@@ -424,6 +439,7 @@ function showPeople(){
     socket.emit("people_list");
     requestType = "chat";
     peopleList.style.display = "block";
+    closeButton.style.display = "block";
     pplListShown = !pplListShown;
     chatInput.style.display = "none";
     sendButton.style.display = "none";
