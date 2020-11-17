@@ -68,12 +68,12 @@ button {
 }
 .chat-div{
   text-align: left;
-  padding: 10px;
+  padding: 5px;
   border-bottom: 1px solid black;
 }
 #ppl-list{
   display: none;
-  height: 20vh;
+  height: 15vh;
   width: 50%;
   margin: auto;
   overflow-y: scroll;
@@ -87,9 +87,14 @@ button {
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
+  font-size: .8em;
 }
 #ppl-list > p:hover{
   cursor: pointer;
+}
+#close-div{
+  width: 50%
+  margin: auto;
 }
 #close{
   display: none;
