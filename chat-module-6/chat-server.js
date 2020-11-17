@@ -66,15 +66,16 @@ class Room {
     this.users.push(user);
   }
   removeUser(username){
-    var userIndex = this.users.indexOf(username);
+    let userToRemove = users[username];
+    var userIndex = this.users.indexOf(userToRemove);
     if (userIndex !== -1) {
       this.users.splice(userIndex, 1);
     }
-    var banIndex = this.bannedUsers.indexOf(username);
-    if (userIndex !== -1) {
-      this.bannedUsers.splice(banIndex, 1);
-    }
-    var muteIndex = this.mutedUsers.indexOf(username);
+    // var banIndex = this.bannedUsers.indexOf(userToRemove);
+    // if (userIndex !== -1) {
+    //   this.bannedUsers.splice(banIndex, 1);
+    // }
+    var muteIndex = this.mutedUsers.indexOf(userToRemove);
     if (muteIndex !== -1) {
       this.mutedUsers.splice(muteIndex, 1);
     }
@@ -82,7 +83,7 @@ class Room {
   banUser(username){
     if(this.bannedUsers.indexOf(username) == -1){
       this.bannedUsers.push(username);
-      removeUser(username);
+      this.removeUser(username);
     }
   }
   muteUser(username){
@@ -249,12 +250,12 @@ io.sockets.on("connection", socket => {
       let target = data.target_user;
       let targetUser = users[target];
       if(room.users.indexOf(targetUser) != -1){
+        room.removeUser(target);
         socket.emit("admin_control_response",{
           status: "success",
           action: "remove"
         })
         targetUser.socket.emit("removed");
-        room.removeUser(target);
       }
       else{
         socket.emit("admin_control_response",{
@@ -274,12 +275,12 @@ io.sockets.on("connection", socket => {
       let target = data.target_user;
       let targetUser = users[target];
       if(room.users.indexOf(targetUser) != -1){
+        room.banUser(target);
         socket.emit("admin_control_response",{
           status: "success",
           action: "ban"
         })
         targetUser.socket.emit("banned");
-        room.banUser(target);
       }
       else{
         socket.emit("admin_control_response",{
@@ -301,12 +302,12 @@ io.sockets.on("connection", socket => {
       console.log(room);
       console.log(room.users);
       if(room.users.indexOf(targetUser) != -1){
+        room.muteUser(target);
         socket.emit("admin_control_response",{
           status: "success",
           action: "mute"
         })
         targetUser.socket.emit("muted");
-        room.muteUser(target);
       }
       else{
         socket.emit("admin_control_response",{
@@ -326,12 +327,12 @@ io.sockets.on("connection", socket => {
       let target = data.target_user;
       let targetUser = users[target];
       if(room.users.indexOf(targetUser) != -1){
+        room.unmuteUser(target);
         socket.emit("admin_control_response",{
           status: "success",
           action: "unmute"
         })
         targetUser.socket.emit("unmuted");
-        room.unmuteUser(target);
       }
       else{
         socket.emit("admin_control_response",{
@@ -350,11 +351,11 @@ io.sockets.on("connection", socket => {
   // ban_request
 
   socket.on("disconnect", function(){
-    if(socketUser.username){
-      delete users[socketUser.username];
+    if(typeof socketUser !== 'undefined' && typeof socketUser.username !== 'undefined'){
       if(socketUser.roomName){
-        rooms[roomName].removeUser(socketUsername.username);
+        rooms[socketUser.roomName].removeUser(socketUser.username);
       }
+      delete users[socketUser.username];
     }
   })
   socket.on("showShit", function(data){
