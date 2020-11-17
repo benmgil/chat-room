@@ -4,6 +4,7 @@ body{
 #screen-container {
   text-align: center;
   height: 95vh;
+  overflow: hidden;
 }
 #home-screen, #password-screen, #create-screen, #browse-screen, #chat-screen {
     display: none;
@@ -23,7 +24,7 @@ button {
   box-shadow: none;
   margin: 10px;
 }
-#username, #room-name, #password-input{
+#username, #room-name, #password-input, #message-input{
   font-size: 1.4em;
   margin: 10px;
   margin-top: 0px;
@@ -68,9 +69,10 @@ button {
   border-bottom: 1px solid black;
 }
 #ppl-list{
-  border: 1px solid black;
   display: none;
-  height: 10vh;
+  height: 24vh;
+  width: 50%;
+  margin: auto;
   overflow-y: scroll;
 }
 #ppl-list > p{
@@ -78,6 +80,13 @@ button {
   padding: 5px;
   border: 1px solid black;
   border-radius: 5px;
+  width: 50%;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+#ppl-list > p:hover{
+  cursor: pointer;
 }
 .private {
     background-color: rgb(241, 189, 189);
