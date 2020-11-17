@@ -254,14 +254,14 @@ function setupSockets(){
 
   //if user is removed from room
   socket.on("removed", function(){
-    window.location.reload(true);
     alert("You have been removed from the room.");
+    window.location.reload(true);
   })
 
   //if user is banned from room
   socket.on("banned", function(){
-    window.location.reload(true);
     alert("You have been banned from the room.");
+    window.location.reload(true);
   })
 }
 
