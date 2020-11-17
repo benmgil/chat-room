@@ -121,6 +121,23 @@ function signOn(){
 
 function setupSockets(){
 
+  //for each received room, create and add room to room list div
+  socket.on("room_list_response", function(data){
+    data.roomList.forEach(function(room, i){
+      let roomp = document.createElement("p");
+      roomp.className = "room-list";
+      roomp.innerText = room.roomName;
+      if(room.isLocked){
+        roomp.innerText += " (locked)";
+      }
+      roomp.addEventListener("click", function(){
+        joinRoom(room.roomName);
+      });
+
+      roomList.appendChild(roomp);
+    })
+  });
+
   //loading the list of people in a room, and adding event listeners depending on why the list is being shown
   socket.on("people_response", function(data){
     peopleList.innerHTML = "";
@@ -323,22 +340,6 @@ function toRoomsList(){
   roomList.innerHTML = "";
 
   socket.emit("request_rooms_list");
-  //for each received room, create and add room to room list div
-  socket.on("room_list_response", function(data){
-    data.roomList.forEach(function(room, i){
-      let roomp = document.createElement("p");
-      roomp.className = "room-list";
-      roomp.innerText = room.roomName;
-      if(room.isLocked){
-        roomp.innerText += " (locked)";
-      }
-      roomp.addEventListener("click", function(){
-        joinRoom(room.roomName);
-      });
-
-      roomList.appendChild(roomp);
-    })
-  });
 }
 
 //when admin clicks on mute button
@@ -401,7 +402,7 @@ function banPerson(recipient){
 }
 
 //when admin clicks on user to unban
-function banPerson(recipient){
+function unbanPerson(recipient){
   peopleList.style.display = "none";
   socket.emit("unban_request", {target_user:recipient})
 }
