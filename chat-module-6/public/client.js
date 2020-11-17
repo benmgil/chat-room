@@ -377,6 +377,8 @@ function requestMute(){
   if(!pplListShown){
     peopleList.style.display="block";
     pplListShown = !pplListShown;
+    chatInput.style.display = "none";
+    sendButton.style.display = "none";
   }
 }
 
@@ -387,6 +389,8 @@ function requestRemove(){
   if(!pplListShown){
     peopleList.style.display="block";
     pplListShown = !pplListShown;
+    chatInput.style.display = "none";
+    sendButton.style.display = "none";
   }
 }
 
@@ -397,6 +401,8 @@ function requestBan(){
   if(!pplListShown){
     peopleList.style.display="block";
     pplListShown = !pplListShown;
+    chatInput.style.display = "none";
+    sendButton.style.display = "none";
   }
 }
 
@@ -407,6 +413,8 @@ function requestUnban(){
   if(!pplListShown){
     peopleList.style.display="block";
     pplListShown = !pplListShown;
+    chatInput.style.display = "none";
+    sendButton.style.display = "none";
   }
 }
 
@@ -417,10 +425,14 @@ function showPeople(){
     requestType = "chat";
     peopleList.style.display = "block";
     pplListShown = !pplListShown;
+    chatInput.style.display = "none";
+    sendButton.style.display = "none";
   }
   else{
     peopleList.style.display = "none";
     pplListShown = !pplListShown;
+    chatInput.style.display = "block";
+    sendButton.style.display = "block";
   }
 }
 
@@ -429,6 +441,8 @@ function mutePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
+    chatInput.style.display = "block";
+    sendButton.style.display = "block";
   }
   socket.emit("mute_request", {target_user:recipient})
 }
@@ -438,6 +452,8 @@ function unmutePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
+    chatInput.style.display = "block";
+    sendButton.style.display = "block";
   }
   socket.emit("unmute_request", {target_user:recipient})
 }
@@ -447,6 +463,8 @@ function removePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
+    chatInput.style.display = "block";
+    sendButton.style.display = "block";
   }
   socket.emit("remove_request", {target_user:recipient})
 }
@@ -456,6 +474,8 @@ function banPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
+    chatInput.style.display = "block";
+    sendButton.style.display = "block";
   }
   socket.emit("ban_request", {target_user:recipient})
 }
@@ -465,6 +485,8 @@ function unbanPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
+    chatInput.style.display = "block";
+    sendButton.style.display = "block";
   }
   socket.emit("unban_request", {target_user:recipient})
 }
@@ -474,6 +496,8 @@ function chatPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
+    chatInput.style.display = "block";
+    sendButton.style.display = "block";
   }
   recipientSpan.innerText = recipient;
 }
