@@ -92,7 +92,6 @@ class Room {
     }
   }
   unmuteUser(username){
-    console.log(username);
     var muteIndex = this.mutedUsers.indexOf(username);
     if (muteIndex !== -1) {
       this.mutedUsers.splice(muteIndex, 1);
@@ -304,8 +303,6 @@ io.sockets.on("connection", socket => {
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
-      console.log(room);
-      console.log(room.users);
       if(room.users.indexOf(targetUser) != -1){
         room.muteUser(target);
         socket.emit("admin_control_response",{
@@ -331,7 +328,6 @@ io.sockets.on("connection", socket => {
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
-      console.log(target);
       if(room.users.indexOf(targetUser) != -1){
         room.unmuteUser(target);
         socket.emit("admin_control_response",{
