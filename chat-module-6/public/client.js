@@ -394,8 +394,7 @@ function requestMute(){
     peopleList.style.display="block";
     closeButton.style.display = "block";
     pplListShown = !pplListShown;
-    chatInput.style.display = "none";
-    sendButton.style.display = "none";
+    chattingBox.style.display = "none";
   }
 }
 
@@ -407,8 +406,7 @@ function requestRemove(){
     peopleList.style.display="block";
     closeButton.style.display = "block";
     pplListShown = !pplListShown;
-    chatInput.style.display = "none";
-    sendButton.style.display = "none";
+    chattingBox.style.display = "none";
   }
 }
 
@@ -420,8 +418,7 @@ function requestBan(){
     peopleList.style.display="block";
     closeButton.style.display = "block";
     pplListShown = !pplListShown;
-    chatInput.style.display = "none";
-    sendButton.style.display = "none";
+    chattingBox.style.display = "none";
   }
 }
 
@@ -433,8 +430,7 @@ function requestUnban(){
     peopleList.style.display="block";
     closeButton.style.display = "block";
     pplListShown = !pplListShown;
-    chatInput.style.display = "none";
-    sendButton.style.display = "none";
+    chattingBox.style.display = "none";
   }
 }
 
@@ -446,14 +442,12 @@ function showPeople(){
     peopleList.style.display = "block";
     closeButton.style.display = "block";
     pplListShown = !pplListShown;
-    chatInput.style.display = "none";
-    sendButton.style.display = "none";
+    chattingBox.style.display = "none";
   }
   else{
     peopleList.style.display = "none";
     pplListShown = !pplListShown;
-    chatInput.style.display = "inline-block";
-    sendButton.style.display = "inline-block";
+    chattingBox.style.display = "block";
   }
 }
 
@@ -462,8 +456,7 @@ function mutePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
-    chatInput.style.display = "inline-block";
-    sendButton.style.display = "inline-block";
+    chattingBox.style.display = "block";
   }
   socket.emit("mute_request", {target_user:recipient})
 }
@@ -473,8 +466,7 @@ function unmutePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
-    chatInput.style.display = "inline-block";
-    sendButton.style.display = "inline-block";
+    chattingBox.style.display = "block";
   }
   socket.emit("unmute_request", {target_user:recipient})
 }
@@ -484,8 +476,7 @@ function removePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
-    chatInput.style.display = "inline-block";
-    sendButton.style.display = "inline-block";
+    chattingBox.style.display = "block";
   }
   socket.emit("remove_request", {target_user:recipient})
 }
@@ -495,8 +486,7 @@ function banPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
-    chatInput.style.display = "inline-block";
-    sendButton.style.display = "inline-block";
+    chattingBox.style.display = "block";
   }
   socket.emit("ban_request", {target_user:recipient})
 }
@@ -506,8 +496,7 @@ function unbanPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
-    chatInput.style.display = "inline-block";
-    sendButton.style.display = "inline-block";
+    chattingBox.style.display = "block";
   }
   socket.emit("unban_request", {target_user:recipient})
 }
@@ -517,8 +506,7 @@ function chatPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
     pplListShown = !pplListShown;
-    chatInput.style.display = "inline-block";
-    sendButton.style.display = "inline-block";
+    chattingBox.style.display = "block";
   }
   recipientSpan.innerText = recipient;
 }
