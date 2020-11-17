@@ -73,7 +73,7 @@ input[type=text]{
 }
 #ppl-list{
   display: none;
-  height: 15vh;
+  height: 20vh;
   width: 50%;
   margin: auto;
   overflow-y: scroll;
