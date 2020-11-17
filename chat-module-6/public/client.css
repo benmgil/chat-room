@@ -30,6 +30,9 @@ button {
   margin-top: 0px;
   text-align: center;
 }
+#message-input{
+  text-align: left;
+}
 #browse-title{
   text-decoration: underline;
 }
@@ -65,12 +68,12 @@ button {
 }
 .chat-div{
   text-align: left;
-  padding: 5%;
+  padding: 10px;
   border-bottom: 1px solid black;
 }
 #ppl-list{
   display: none;
-  height: 24vh;
+  height: 20vh;
   width: 50%;
   margin: auto;
   overflow-y: scroll;
@@ -88,6 +91,9 @@ button {
 #ppl-list > p:hover{
   cursor: pointer;
 }
+#close{
+  display: none;
+}
 .private {
     background-color: rgb(241, 189, 189);
 }
@@ -95,8 +101,8 @@ button {
     background-color: rgb(192, 237, 243);
 }
 .header{
-    font-size: 12px
+    font-size: .9em
 }
 .content{
-    font-size: 14px;
+    font-size: 1.2em;
 }

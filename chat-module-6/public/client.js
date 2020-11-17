@@ -226,6 +226,8 @@ function setupSockets(){
     chatDiv.appendChild(headerP);
     chatDiv.appendChild(contentP);
     chatBox.appendChild(chatDiv);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
   })
 
   //join chat room response handler
