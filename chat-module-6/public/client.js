@@ -105,10 +105,12 @@ function signOn(){
   else{
     socket = io.connect();
     socket.on("request_username", function(){
+      errorMessage.innerText = "";
       username = loginInput.value;
       socket.emit("login", {username:username});
     })
     socket.on("login_response", function(data){
+      errorMessage.innerText = "";
       if(data.status == "success"){
         loginScreen.style.display="none";
         homeScreen.style.display="block";
@@ -126,6 +128,7 @@ function setupSockets(){
 
   //for each received room, create and add room to room list div
   socket.on("room_list_response", function(data){
+    errorMessage.innerText = "";
     data.roomList.forEach(function(room, i){
       let roomp = document.createElement("p");
       roomp.className = "room-list";
@@ -143,6 +146,7 @@ function setupSockets(){
 
   //loading the list of people in a room, and adding event listeners depending on why the list is being shown
   socket.on("people_response", function(data){
+    errorMessage.innerText = "";
     peopleList.innerHTML = "";
     //if its for chatting purposes, add the "everyone" option
     if(requestType == "chat"){
@@ -200,6 +204,7 @@ function setupSockets(){
 
   //updating the chat box
   socket.on("chat_recieved", function(data){
+    errorMessage.innerText = "";
     let chatDiv = document.createElement("div");
     let headerP = document.createElement("p");
     headerP.className = "header";
@@ -221,12 +226,14 @@ function setupSockets(){
 
   //join chat room response handler
   socket.on("join_response", function(data){
+    errorMessage.innerText = "";
     if(data.status == "success"){
       adminCommands.style.display = "none";
       homeScreen.style.display = "none";
       chatScreen.style.display = "block";
       passwordScreen.style.display = "none";
       browseScreen.style.display = "none";
+      errorMessage.innerText = "";
     }
     else if(data.status == "password_required"){
       homeScreen.style.display = "none";
@@ -240,6 +247,7 @@ function setupSockets(){
 
   //create chat room response handler
   socket.on("create_response", function(data){
+    errorMessage.innerText = "";
     if(data.status == "success"){
       adminCommands.style.display = "block";
       createScreen.style.display="none";
@@ -253,11 +261,13 @@ function setupSockets(){
 
   //when non-admin attempts admin controls
   socket.on("access_denied", function(){
+    errorMessage.innerText = "";
     alert("You do not have access to this action.");
   })
 
   //if admin control request failed
   socket.on("admin_control_response", function(data){
+    errorMessage.innerText = "";
     if(data.status == "failure"){
       alert(data.message);
     }
@@ -265,30 +275,35 @@ function setupSockets(){
 
   //if user is muted
   socket.on("muted", function(){
+    errorMessage.innerText = "";
     chattingBox.style.display = "none";
     mutedP.style.display = "block";
   })
 
   //if user is unmuted
   socket.on("unmuted", function(){
+    errorMessage.innerText = "";
     chattingBox.style.display = "block";
     mutedP.style.display = "none";
   })
 
   //if user is removed from room
   socket.on("removed", function(){
+    errorMessage.innerText = "";
     alert("You have been removed from the room.");
     window.location.reload(true);
   })
 
   //if user is banned from room
   socket.on("banned", function(){
+    errorMessage.innerText = "";
     alert("You have been banned from the room.");
     window.location.reload(true);
   })
 
   //when user leaves room
   socket.on("successful_leave", function(){
+    errorMessage.innerText = "";
     chatScreen.style.display = "none";
     homeScreen.style.display = "block";
   })
