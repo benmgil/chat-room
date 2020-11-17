@@ -24,7 +24,7 @@ button {
   box-shadow: none;
   margin: 10px;
 }
-#username, #room-name, #password-input, #message-input{
+input[type=text]{
   font-size: 1.4em;
   margin: 10px;
   margin-top: 0px;
