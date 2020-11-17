@@ -66,9 +66,17 @@ class Room {
     this.users.push(user);
   }
   removeUser(username){
-    var index = this.users.indexOf(username);
-    if (index !== -1) {
-      this.users.splice(index, 1);
+    var userIndex = this.users.indexOf(username);
+    if (userIndex !== -1) {
+      this.users.splice(userIndex, 1);
+    }
+    var banIndex = this.bannedUsers.indexOf(username);
+    if (userIndex !== -1) {
+      this.bannedUsers.splice(banIndex, 1);
+    }
+    var muteIndex = this.mutedUsers.indexOf(username);
+    if (muteIndex !== -1) {
+      this.mutedUsers.splice(muteIndex, 1);
     }
   }
   banUser(username){
@@ -87,7 +95,6 @@ class Room {
     if (index !== -1) {
       this.mutedUsers.splice(index, 1);
     }
-
   }
 }
 
@@ -342,6 +349,14 @@ io.sockets.on("connection", socket => {
   // remove_request
   // ban_request
 
+  socket.on("disconnect", function(){
+    if(socketUser.username){
+      delete users[socketUser.username];
+      if(socketUser.roomName){
+        rooms[roomName].removeUser(socketUsername.username);
+      }
+    }
+  })
   socket.on("showShit", function(data){
     console.log(rooms);
     console.log(users);
