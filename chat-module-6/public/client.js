@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function(){
   mutedP = document.getElementById("muted");
   leaveButton = document.getElementById("leave-room");
   closeButton = document.getElementById("close");
-  roomSpan = document.getElementById("room-name");
+  target_useran = document.getElementById("room-name");
 
   loginButton.addEventListener("click", signOn);
   joinRoomButton.addEventListener("click", function(){
@@ -245,10 +245,11 @@ function setupSockets(){
 
   //join chat room response handler
   socket.on("join_response", function(data){
+    console.log(data);
     errorMessage.innerText = "";
     if(data.status == "success"){
       adminCommands.style.display = "none";
-      roomSpan.innerText = data.roomName;
+      leaveButton.innerText += " (" + data.roomName + ")";
       homeScreen.style.display = "none";
       chatScreen.style.display = "block";
       passwordScreen.style.display = "none";
@@ -267,9 +268,10 @@ function setupSockets(){
 
   //create chat room response handler
   socket.on("create_response", function(data){
+    console.log(data);
     errorMessage.innerText = "";
     if(data.status == "success"){
-      roomSpan.innerText = data.roomName;
+      leaveButton.innerText += " (" + data.roomName + ")";
       adminCommands.style.display = "block";
       createScreen.style.display="none";
       chatScreen.style.display="block";

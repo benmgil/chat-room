@@ -165,7 +165,7 @@ io.sockets.on("connection", socket => {
       rooms[data.roomName] = room;
 
       //send a success and add the socket to the room
-      io.to(socket.id).emit("create_response", {status: "success", roomName:roomNameRequested})
+      io.to(socket.id).emit("create_response", {status: "success", roomName:data.roomName})
       socket.join(data.roomName);
       socketUser.joinRoom(data.roomName);
     }
