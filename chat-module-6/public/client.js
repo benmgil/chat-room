@@ -213,7 +213,7 @@ function setupSockets(){
   //create chat room response handler
   socket.on("create_response", function(data){
     if(data.status == "success"){
-      adminCommands.style.display = "none";
+      adminCommands.style.display = "block";
       createScreen.style.display="none";
       chatScreen.style.display="block";
       errorMessage.innerText = "";
