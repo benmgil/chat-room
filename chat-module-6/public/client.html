@@ -16,15 +16,16 @@
       </div>
 
       <div id = "home-screen">
-         <input id="room-name" type="text" maxlength="50" value="Enter Room Name Here"><br>
+         <p>Room Name</p>
+         <input id="room-name" type="text" maxlength="50"><br>
          <button id="join-room">Join Room</button><br><br>
          <button id="browse">Browse Current Rooms</button>
          <button id="create-room">Create New Room</button>
       </div>
 
       <div id="password-screen">
-         Please enter the room password:
-         <input id="password-input" type="text" maxlength="25">
+         <p>Please enter the room password</p>
+         <input id="password-input" type="text" maxlength="25"><br>
          <button id="join-private-room">Join Room</button>
       </div>
 
@@ -40,17 +41,19 @@
       </div>
 
       <div id = "chat-screen">
-         <button id="leave-room">Leave Room</button>
-         <div id="chatlog"></div> <!-- displays chat history -->
-         <p id="admin-commands"> <button id="mute">Mute/Unmute a Participant</button> <button id="remove">Remove a Participant</button>
-            <button id="ban">Ban a Participant</button> <button id="unban">Un-ban a Participant</button></p>
-         <div id="ppl-list"></div> <!-- displays list of participants -->
-         <div id = "chat-box">
-            <p>To: <span id="recipient">Everyone</span> <button id="show-people">^</button></p>
-            <input type=text id="message-input"/>
-            <button id="send-button">send</button>
-         </div>
-         <p id = "muted">You have been muted and cannot chat in this room.</p>
+        <div id="leave-div">
+          <button id="leave-room">Leave Room</button>
+        </div>
+        <div id="chatlog"></div> <!-- displays chat history -->
+        <p id="admin-commands"> <button id="mute">Mute/Unmute a Participant</button> <button id="remove">Remove a Participant</button>
+          <button id="ban">Ban a Participant</button> <button id="unban">Un-ban a Participant</button></p>
+        <div id="ppl-list"></div> <!-- displays list of participants -->
+        <div id = "chat-box">
+          <p>To: <span id="recipient">Everyone</span> <button id="show-people">^</button></p>
+          <input type=text id="message-input"/>
+          <button id="send-button">send</button>
+        </div>
+        <p id = "muted">You have been muted and cannot chat in this room.</p>
       </div>
     </div>
    </body>

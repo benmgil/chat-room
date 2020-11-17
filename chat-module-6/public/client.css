@@ -3,7 +3,7 @@ body{
 }
 #screen-container {
   text-align: center;
-  height: 100vh;
+  height: 95vh;
 }
 #home-screen, #password-screen, #create-screen, #browse-screen, #chat-screen {
     display: none;
@@ -23,24 +23,54 @@ button {
   box-shadow: none;
   margin: 10px;
 }
-#username{
-  margin: 10px;
-  font-size: 1.4em;
-}
-#room-name{
+#username, #room-name, #password-input{
   font-size: 1.4em;
   margin: 10px;
+  margin-top: 0px;
   text-align: center;
 }
 #browse-title{
   text-decoration: underline;
 }
 .room-list {
-  width: 40%;
+  width: 33%;
   border: 1px solid black;
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
+  border-radius: 5px;
+  padding: 10px;
+}
+.room-list:hover{
+  cursor: pointer;
+}
+.locked {
+  color: red;
+}
+
+#leave-div{
+  width: 20%;
+  text-align: left;
+  padding: 10px;
+  margin-left: 10%;
+}
+#leave-div > button {
+  margin-left: 10%;
+}
+
+#chatlog{
+  height: 60vh;
+  overflow-y: scroll;
+}
+#ppl-list{
+  border: 1px solid black;
+  display: none;
+}
+#ppl-list > p{
+  text-decoration: underline;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 .private {
     background-color: rgb(241, 189, 189);

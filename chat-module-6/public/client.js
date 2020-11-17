@@ -107,7 +107,7 @@ function signOn(){
       username = loginInput.value;
       socket.emit("login", {username:username});
     })
-    //response to login request 
+    //response to login request
     socket.on("login_response", function(data){
       errorMessage.innerText = "";
       if(data.status == "success"){
@@ -136,7 +136,7 @@ function setupSockets(){
         let span = document.createElement("span");
         span.innerText = " (locked)";
         span.className = "locked";
-        roomp.appendChild += span;
+        roomp.appendChild(span);
       }
       roomp.addEventListener("click", function(){
         joinRoom(room.roomName);
@@ -160,7 +160,7 @@ function setupSockets(){
       });
       peopleList.appendChild(every);
     }
-    //creating a menu to select users 
+    //creating a menu to select users
     data.peopleList.forEach(function(person, i){
       if(person.username != username){
         let personP = document.createElement("p");
