@@ -133,7 +133,10 @@ function setupSockets(){
       roomp.className = "room-list";
       roomp.innerText = room.roomName;
       if(room.isLocked){
-        roomp.innerText += " (locked)";
+        let span = document.createElement("span");
+        span.innerText = " (locked)";
+        span.className = "locked";
+        roomp.appendChild += span;
       }
       roomp.addEventListener("click", function(){
         joinRoom(room.roomName);

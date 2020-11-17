@@ -65,6 +65,8 @@ class Room {
   addUser(user){
     this.users.push(user);
   }
+
+  //removing user from room
   removeUser(username){
     let userToRemove = users[username];
     var userIndex = this.users.indexOf(userToRemove);
@@ -75,41 +77,50 @@ class Room {
     // if (userIndex !== -1) {
     //   this.bannedUsers.splice(banIndex, 1);
     // }
+
+    //if user is in muted list, removes them from there
     var muteIndex = this.mutedUsers.indexOf(userToRemove);
     if (muteIndex !== -1) {
       this.mutedUsers.splice(muteIndex, 1);
     }
 
+    //if user leaves room
     if(this.admin !== null && username == this.admin.username){
       this.admin = null;
     }
+    //destroys room if its the last user
     if(this.users.length == 0){
       delete rooms[this.name];
     }
   }
+  //adds user to banned list if theyre not already there
   banUser(username){
     if(this.bannedUsers.indexOf(username) == -1){
       this.bannedUsers.push(username);
       this.removeUser(username);
     }
   }
+  //removes user from banned list if theyre not already missing
   unbanUser(username){
     var banIndex = this.bannedUsers.indexOf(username);
     if(banIndex !== -1){
       this.bannedUsers.splice(banIndex, 1);
     }
   }
+  //adds user to muted list if theyre not already there
   muteUser(username){
     if(this.mutedUsers.indexOf(username) == -1){
       this.mutedUsers.push(username)
     }
   }
+  //removes user from muted list if theyre not already missing
   unmuteUser(username){
     var muteIndex = this.mutedUsers.indexOf(username);
     if (muteIndex !== -1) {
       this.mutedUsers.splice(muteIndex, 1);
     }
   }
+
   isMuted(username){
     return this.mutedUsers.indexOf(username) != -1;
   }
@@ -213,6 +224,7 @@ io.sockets.on("connection", socket => {
     if(room.mutedUsers.indexOf(socketUser.username) == -1){
       let recip = data.recipient;
       let isPrivate = false;
+      //if the message is to everyone
       if(recip == "Everyone"){
         io.to(socketUser.roomName).emit("chat_recieved", {
           sender: socketUser.username,
@@ -221,6 +233,7 @@ io.sockets.on("connection", socket => {
           chat_content: data.chat_content
         })
       }
+      //if the message private
       else{
         isPrivate = true;
         if(users[recip]){
@@ -241,6 +254,7 @@ io.sockets.on("connection", socket => {
     }
   })
 
+  //send list of rooms with info
   socket.on("request_rooms_list", function(){
     let roomList = [];
     for(let r in rooms){
@@ -249,6 +263,8 @@ io.sockets.on("connection", socket => {
     }
     socket.emit("room_list_response", {roomList: roomList});
   })
+
+  //send list of people in room 
   socket.on("people_list", function(){
     let peopleList = [];
     let room = rooms[socketUser.roomName];
@@ -260,6 +276,8 @@ io.sockets.on("connection", socket => {
     }
     socket.emit("people_response", {peopleList: peopleList});
   });
+
+  //send list of people in ban list for the room
   socket.on("ban_list", function(){
     let banList = [];
     let room = rooms[socketUser.roomName];
@@ -271,11 +289,13 @@ io.sockets.on("connection", socket => {
     socket.emit("people_response", {peopleList: banList});
   })
 
+  //removing user from room and sending success/failure from admin end and from user end
   socket.on("remove_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
+      //if user is in room, send success 
       if(room.users.indexOf(targetUser) != -1){
         room.removeUser(target);
         socket.emit("admin_control_response",{
@@ -284,6 +304,7 @@ io.sockets.on("connection", socket => {
         })
         targetUser.socket.emit("removed");
       }
+      //if not, send failure
       else{
         socket.emit("admin_control_response",{
           status: "failure",
@@ -296,6 +317,7 @@ io.sockets.on("connection", socket => {
     }
   });
 
+  //bannin user from room and sending success/failure from admin end and from user end
   socket.on("ban_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
@@ -320,6 +342,8 @@ io.sockets.on("connection", socket => {
       socket.emit("access_denied");
     }
   });
+
+
   socket.on("unban_request", function(data){
     let room = rooms[socketUser.roomName];
     if (socketUser == room.admin){
