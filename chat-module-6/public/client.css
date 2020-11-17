@@ -111,3 +111,6 @@ input[type=text]{
 .content{
     font-size: 1.2em;
 }
+.muted{
+  background-color: #cfcfcf;
+}

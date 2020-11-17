@@ -165,7 +165,7 @@ io.sockets.on("connection", socket => {
       rooms[data.roomName] = room;
 
       //send a success and add the socket to the room
-      io.to(socket.id).emit("create_response", {status: "success"})
+      io.to(socket.id).emit("create_response", {status: "success", roomName:roomNameRequested})
       socket.join(data.roomName);
       socketUser.joinRoom(data.roomName);
     }
@@ -184,7 +184,7 @@ io.sockets.on("connection", socket => {
        //make sure the user isn't banned
       if(roomRequested.bannedUsers.indexOf(socketUser.username) == -1){
         if(roomRequested.password == ""){ //if there's no password let them join
-          socket.emit("join_response", {status: "success"});
+          socket.emit("join_response", {status: "success", roomName:roomNameRequested});
           socket.join(roomNameRequested);
           roomRequested.addUser(socketUser);
           socketUser.joinRoom(roomNameRequested);
@@ -206,7 +206,7 @@ io.sockets.on("connection", socket => {
   socket.on("password_entered", function(data){
     let roomRequested = rooms[roomNameRequested]
     if(data.password = roomRequested.password){ //if it's right let them in
-      socket.emit("join_response", {status: "success"});
+      socket.emit("join_response", {status: "success", roomName:roomNameRequested});
       socket.join(roomNameRequested);
       roomRequested.addUser(socketUser);
       socketUser.joinRoom(roomNameRequested);
@@ -264,7 +264,7 @@ io.sockets.on("connection", socket => {
     socket.emit("room_list_response", {roomList: roomList});
   })
 
-  //send list of people in room 
+  //send list of people in room
   socket.on("people_list", function(){
     let peopleList = [];
     let room = rooms[socketUser.roomName];
@@ -295,7 +295,7 @@ io.sockets.on("connection", socket => {
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
-      //if user is in room, send success 
+      //if user is in room, send success
       if(room.users.indexOf(targetUser) != -1){
         room.removeUser(target);
         socket.emit("admin_control_response",{
@@ -323,7 +323,7 @@ io.sockets.on("connection", socket => {
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
-      //if user is in room, send success 
+      //if user is in room, send success
       if(room.users.indexOf(targetUser) != -1){
         room.banUser(target);
         socket.emit("admin_control_response",{
