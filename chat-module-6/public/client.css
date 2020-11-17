@@ -59,12 +59,19 @@ button {
 }
 
 #chatlog{
-  height: 60vh;
+  height: 50vh;
   overflow-y: scroll;
+}
+.chat-div{
+  text-align: left;
+  padding: 5%;
+  border-bottom: 1px solid black;
 }
 #ppl-list{
   border: 1px solid black;
   display: none;
+  height: 10vh;
+  overflow-y: scroll;
 }
 #ppl-list > p{
   text-decoration: underline;
@@ -83,7 +90,4 @@ button {
 }
 .content{
     font-size: 14px;
-}
-.chat-div{
-    border-bottom: 1px solid black;
 }

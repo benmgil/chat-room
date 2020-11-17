@@ -9,12 +9,15 @@
    <body>
      <div id="screen-container">
       <p id="error-message"> </p>
+
+      <!--initial login screen-->
       <div id = "login-screen">
          <p>Username</p>
          <input id="username" type="text" maxlength="25"><br>
          <button id="login">Sign On</button>
       </div>
 
+      <!--home screen w option to join/browse/create rooms-->
       <div id = "home-screen">
          <p>Room Name</p>
          <input id="room-name" type="text" maxlength="50"><br>
@@ -23,23 +26,27 @@
          <button id="create-room">Create New Room</button>
       </div>
 
+      <!--password screen for joining locked room-->
       <div id="password-screen">
          <p>Please enter the room password</p>
          <input id="password-input" type="text" maxlength="25"><br>
          <button id="join-private-room">Join Room</button>
       </div>
 
+      <!--screen to create new room-->
       <div id="create-screen">
          <input id="new-room-name" type="text" maxlength="50" value="Room Name">
          <input id="new-room-password" type="text" maxlength="25" value="Room Password (Optional)">
          <button id="create-room-button">Create</button>
       </div>
 
+      <!--screen to browse currently open rooms-->
       <div id="browse-screen">
          <h1 id="browse-title">Available Rooms</h1>
          <div id="room-list"></div>
       </div>
 
+      <!--chat screen-->
       <div id = "chat-screen">
         <div id="leave-div">
           <button id="leave-room">Leave Room</button>
@@ -54,6 +61,7 @@
           <button id="send-button">send</button>
         </div>
         <p id = "muted">You have been muted and cannot chat in this room.</p>
+
       </div>
     </div>
    </body>

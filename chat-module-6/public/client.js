@@ -376,6 +376,7 @@ function requestMute(){
   requestType = "mute";
   if(!pplListShown){
     peopleList.style.display="block";
+    pplListShown = !pplListShown;
   }
 }
 
@@ -385,6 +386,7 @@ function requestRemove(){
   requestType = "remove";
   if(!pplListShown){
     peopleList.style.display="block";
+    pplListShown = !pplListShown;
   }
 }
 
@@ -394,6 +396,7 @@ function requestBan(){
   requestType = "ban";
   if(!pplListShown){
     peopleList.style.display="block";
+    pplListShown = !pplListShown;
   }
 }
 
@@ -403,6 +406,7 @@ function requestUnban(){
   requestType = "unban";
   if(!pplListShown){
     peopleList.style.display="block";
+    pplListShown = !pplListShown;
   }
 }
 
@@ -412,9 +416,11 @@ function showPeople(){
     socket.emit("people_list");
     requestType = "chat";
     peopleList.style.display = "block";
+    pplListShown = !pplListShown;
   }
   else{
     peopleList.style.display = "none";
+    pplListShown = !pplListShown;
   }
 }
 
@@ -422,6 +428,7 @@ function showPeople(){
 function mutePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
+    pplListShown = !pplListShown;
   }
   socket.emit("mute_request", {target_user:recipient})
 }
@@ -430,6 +437,7 @@ function mutePerson(recipient){
 function unmutePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
+    pplListShown = !pplListShown;
   }
   socket.emit("unmute_request", {target_user:recipient})
 }
@@ -438,6 +446,7 @@ function unmutePerson(recipient){
 function removePerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
+    pplListShown = !pplListShown;
   }
   socket.emit("remove_request", {target_user:recipient})
 }
@@ -446,6 +455,7 @@ function removePerson(recipient){
 function banPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
+    pplListShown = !pplListShown;
   }
   socket.emit("ban_request", {target_user:recipient})
 }
@@ -454,6 +464,7 @@ function banPerson(recipient){
 function unbanPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
+    pplListShown = !pplListShown;
   }
   socket.emit("unban_request", {target_user:recipient})
 }
@@ -462,6 +473,7 @@ function unbanPerson(recipient){
 function chatPerson(recipient){
   if(pplListShown){
     peopleList.style.display="none";
+    pplListShown = !pplListShown;
   }
   recipientSpan.innerText = recipient;
 }
