@@ -31,6 +31,7 @@ let chatInput;
 let sendButton;
 let chattingBox;
 let mutedP;
+let leaveButton;
 
 let socket;
 let username;
@@ -73,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function(){
   sendButton = document.getElementById("send-button");
   chattingBox = document.getElementById("chat-box");
   mutedP = document.getElementById("muted");
+  leaveButton = document.getElementById("leave-room");
 
   loginButton.addEventListener("click", signOn);
   joinRoomButton.addEventListener("click", function(){
@@ -88,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function(){
   unbanButton.addEventListener("click", requestUnban);
   showPeopleButton.addEventListener("click", showPeople);
   sendButton.addEventListener("click", sendChat);
+  leaveButton.addEventListener("click", leaveRequest);
 
   document.getElementById("show-shit").addEventListener("click", function(){
     socket.emit("showShit");
@@ -283,6 +286,12 @@ function setupSockets(){
     alert("You have been banned from the room.");
     window.location.reload(true);
   })
+
+  //when user leaves room
+  socket.on("successful_leave", function(){
+    chatScreen.style.display = "none";
+    homeScreen.style.display = "block";
+  })
 }
 
 //requesting to join a room
@@ -423,4 +432,9 @@ function sendChat(){
     chatText = chatInput.value;
     socket.emit("send_chat", {chat_content:chatText, recipient:recipientSpan.innerText, sender:username})
   }
+}
+
+//when leave room button is pressed
+function leaveRequest(){
+  socket.emit("user_left")
 }
