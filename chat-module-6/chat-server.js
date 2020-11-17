@@ -86,6 +86,12 @@ class Room {
       this.removeUser(username);
     }
   }
+  unbanUser(username){
+    var banIndex = this.bannedUsers.indexOf(username);
+    if(banIndex !== -1){
+      this.bannedUsers.splice(banIndex, 1);
+    }
+  }
   muteUser(username){
     if(this.mutedUsers.indexOf(username) == -1){
       this.mutedUsers.push(username)
@@ -247,6 +253,15 @@ io.sockets.on("connection", socket => {
     }
     socket.emit("people_response", {peopleList: peopleList});
   });
+  socket.on("ban_list", function(){
+    let banList = [];
+    let room = rooms[socketUser.roomName];
+    let users = room.bannedUsers;
+    for(let u in users){
+      banList.push({username: u})
+    }
+    socket.emit("people_response", {peopleList: banList});
+  })
 
   socket.on("remove_request", function(data){
     let room = rooms[socketUser.roomName];
@@ -297,6 +312,30 @@ io.sockets.on("connection", socket => {
       socket.emit("access_denied");
     }
   });
+  socket.on("unban_request", function(data){
+    let room = rooms[socketUser.roomName];
+    if (socketUser == room.admin){
+      let target = data.target_user;
+      let targetUser = users[target];
+      if(room.users.indexOf(targetUser) != -1){
+        room.unbanUser(target);
+        socket.emit("admin_control_response",{
+          status: "success",
+          action: "unban"
+        })
+      }
+      else{
+        socket.emit("admin_control_response",{
+          status: "failure",
+          message: "Target user not in room"
+        })
+      }
+    }
+    else{
+      socket.emit("access_denied");
+    }
+  });
+
 
   socket.on("mute_request", function(data){
     let room = rooms[socketUser.roomName];
