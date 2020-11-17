@@ -122,7 +122,7 @@ function closeMenu(){
 
 //going back to home screen from browse screen
 function backToHome(){
-  browseRoomsButton.style.display = "none";
+  browseScreen.style.display = "none";
   homeScreen.style.display = "block";
 }
 
@@ -266,7 +266,7 @@ function setupSockets(){
     errorMessage.innerText = "";
     if(data.status == "success"){
       adminCommands.style.display = "none";
-      roomSpan.innerText = data.roomName;
+      roomSpan.innerText = "Leave Room ("+data.roomName+")";
       homeScreen.style.display = "none";
       chatScreen.style.display = "block";
       passwordScreen.style.display = "none";
@@ -287,7 +287,7 @@ function setupSockets(){
   socket.on("create_response", function(data){
     errorMessage.innerText = "";
     if(data.status == "success"){
-      roomSpan.innerText = data.roomName;
+      roomSpan.innerText = "Leave Room ("+data.roomName+")";
       adminCommands.style.display = "block";
       createScreen.style.display="none";
       chatScreen.style.display="block";
