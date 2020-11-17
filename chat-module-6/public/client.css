@@ -1,11 +1,27 @@
+#screen-container {
+  text-align: center;
+  height: 100vh;
+}
 #home-screen, #password-screen, #create-screen, #browse-screen, #chat-screen {
     display: none;
+    text-align: center;
 }
 
 #muted{
     display:none;
 }
 
+#username{
+  margin: 10px;
+  margin-bottom: 20px;
+}
+button {
+  border: 1px solid black;
+  border-radius: 5px;
+  background: none;
+  box-shadow: none;
+  border-radius: 0px;
+}
 .private {
     background-color: rgb(241, 189, 189);
 }

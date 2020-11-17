@@ -7,17 +7,17 @@
    </head>
 
    <body>
+     <div id="screen-container">
       <p id="error-message"> </p>
       <div id = "login-screen">
-         Username:
-         <input id="username" type="text" maxlength="25">
+         <p>Username</p>
+         <input id="username" type="text" maxlength="25"><br>
          <button id="login">Sign On</button>
       </div>
 
       <div id = "home-screen">
-         <input id="room-name" type="text" maxlength="50" value="Enter Room Name Here">
-         <button id="join-room">Join Room</button>
-         <button id="show-shit">Show Shit</button>
+         <input id="room-name" type="text" maxlength="50" value="Enter Room Name Here"><br>
+         <button id="join-room">Join Room</button><br>
          <button id="browse">Browse Current Rooms</button>
          <button id="create-room">Create New Room</button>
       </div>
@@ -42,7 +42,7 @@
       <div id = "chat-screen">
          <button id="leave-room">Leave Room</button>
          <div id="chatlog"></div> <!-- displays chat history -->
-         <p id="admin-commands"> <button id="mute">Mute/Unmute a Participant</button> <button id="remove">Remove a Participant</button> 
+         <p id="admin-commands"> <button id="mute">Mute/Unmute a Participant</button> <button id="remove">Remove a Participant</button>
             <button id="ban">Ban a Participant</button> <button id="unban">Un-ban a Participant</button></p>
          <div id="ppl-list"></div> <!-- displays list of participants -->
          <div id = "chat-box">
@@ -52,5 +52,6 @@
          </div>
          <p id = "muted">You have been muted and cannot chat in this room.</p>
       </div>
+    </div>
    </body>
 </html>

@@ -5,7 +5,7 @@ const http = require("http"),
     url = require('url'),
     mime = require('mime'),
     path = require('path');
-const port = 3000;
+const port = 3456;
 let file = "client.html";
 const server = http.createServer(function (req, res) {
     let filename = url.parse(req.url).pathname;
@@ -78,6 +78,13 @@ class Room {
     var muteIndex = this.mutedUsers.indexOf(userToRemove);
     if (muteIndex !== -1) {
       this.mutedUsers.splice(muteIndex, 1);
+    }
+
+    if(this.admin !== null && username == this.admin.username){
+      this.admin = null;
+    }
+    if(this.users.length == 0){
+      delete rooms[this.name];
     }
   }
   banUser(username){
@@ -382,16 +389,11 @@ io.sockets.on("connection", socket => {
 
   socket.on("user_left", function(){
     let room = rooms[socketUser.roomName];
-    room.removeUser(target);
+    room.removeUser(socketUser.username);
     socketUser.roomName = "";
     socket.emit("successful_leave");
 
   })
-
-
-  // mute_request
-  // remove_request
-  // ban_request
 
   socket.on("disconnect", function(){
     if(typeof socketUser !== 'undefined' && typeof socketUser.username !== 'undefined'){
@@ -401,13 +403,5 @@ io.sockets.on("connection", socket => {
       delete users[socketUser.username];
     }
   })
-  socket.on("showShit", function(data){
-    console.log(rooms);
-    console.log(users);
-    console.log(" ");
-  })
-    // socket.on('message_to_server', data => {
-    //     console.log("message: " + data["message"]); // log it to the Node.JS output
-    //     io.sockets.emit("message_to_client", { message: data["message"] }) // broadcast the message to other users
-    // });
+
 });
