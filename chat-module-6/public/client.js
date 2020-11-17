@@ -38,6 +38,7 @@ let username;
 let password;
 let chatText;
 let requestType;
+let pplListShown = false;
 
 document.addEventListener("DOMContentLoaded", function(){
   loginScreen = document.getElementById("login-screen");
@@ -373,33 +374,41 @@ function toRoomsList(){
 function requestMute(){
   socket.emit("people_list");
   requestType = "mute";
-  peopleList.style.display="block";
+  if(!pplListShown){
+    peopleList.style.display="block";
+  }
 }
 
 //when admin clicks on remove button
 function requestRemove(){
   socket.emit("people_list");
   requestType = "remove";
-  peopleList.style.display="block";
+  if(!pplListShown){
+    peopleList.style.display="block";
+  }
 }
 
 //when admin clicks on ban button
 function requestBan(){
   socket.emit("people_list");
   requestType = "ban";
-  peopleList.style.display="block";
+  if(!pplListShown){
+    peopleList.style.display="block";
+  }
 }
 
 //when admin clicks on unban button
 function requestUnban(){
   socket.emit("ban_list");
   requestType = "unban";
-  peopleList.style.display="block";
+  if(!pplListShown){
+    peopleList.style.display="block";
+  }
 }
 
 //the show ppl button is clicked
 function showPeople(){
-  if(peopleList.style.display == "none"){
+  if(!pplListShown){
     socket.emit("people_list");
     requestType = "chat";
     peopleList.style.display = "block";
@@ -411,37 +420,49 @@ function showPeople(){
 
 //when admin clicks on user to mute
 function mutePerson(recipient){
-  peopleList.style.display = "none";
+  if(pplListShown){
+    peopleList.style.display="none";
+  }
   socket.emit("mute_request", {target_user:recipient})
 }
 
 //when admin clicks on user to unmute
 function unmutePerson(recipient){
-  peopleList.style.display = "none";
+  if(pplListShown){
+    peopleList.style.display="none";
+  }
   socket.emit("unmute_request", {target_user:recipient})
 }
 
 //when admin clicks on user to remove
 function removePerson(recipient){
-  peopleList.style.display = "none";
+  if(pplListShown){
+    peopleList.style.display="none";
+  }
   socket.emit("remove_request", {target_user:recipient})
 }
 
 //when admin clicks on user to ban
 function banPerson(recipient){
-  peopleList.style.display = "none";
+  if(pplListShown){
+    peopleList.style.display="none";
+  }
   socket.emit("ban_request", {target_user:recipient})
 }
 
 //when admin clicks on user to unban
 function unbanPerson(recipient){
-  peopleList.style.display = "none";
+  if(pplListShown){
+    peopleList.style.display="none";
+  }
   socket.emit("unban_request", {target_user:recipient})
 }
 
 //when admin clicks on user to chat
 function chatPerson(recipient){
-  peopleList.style.display = "none";
+  if(pplListShown){
+    peopleList.style.display="none";
+  }
   recipientSpan.innerText = recipient;
 }
 
