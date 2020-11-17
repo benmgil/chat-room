@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function(){
   unbanButton.addEventListener("click", requestUnban);
   showPeopleButton.addEventListener("click", showPeople);
   sendButton.addEventListener("click", sendChat);
-  console.log(sendButton);
 
   document.getElementById("show-shit").addEventListener("click", function(){
     socket.emit("showShit");
@@ -176,7 +175,6 @@ function setupSockets(){
 
   //updating the chat box
   socket.on("chat_recieved", function(data){
-    console.log("AHAH")
     let chatDiv = document.createElement("div");
     let headerP = document.createElement("p");
     headerP.className = "header";
@@ -248,7 +246,6 @@ function setupSockets(){
 
   //if user is unmuted
   socket.on("unmuted", function(){
-    console.log("AH");
     chattingBox.style.display = "block";
     mutedP.style.display = "none";
   })
@@ -268,7 +265,6 @@ function setupSockets(){
 
 //requesting to join a room
 function joinRoom(roomName = ""){
-  console.log(roomName);
   if(roomInput.value == "" && roomName == ""){
     errorMessage.innerText = "Error: Please enter a room name."
   }
@@ -276,8 +272,6 @@ function joinRoom(roomName = ""){
     if(roomName == "")
       roomName = roomInput.value;
     errorMessage.innerText = "";
-    console.log(roomInput.value);
-    console.log(roomName);
     socket.emit("join_room", {roomName: roomName});
   }
 }
