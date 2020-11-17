@@ -249,7 +249,7 @@ function setupSockets(){
   //if user is unmuted
   socket.on("unmuted", function(){
     chattingBox.style.display = "block";
-    mutedP.style.display = "unmute";
+    mutedP.style.display = "none";
   })
 
   //if user is removed from room
