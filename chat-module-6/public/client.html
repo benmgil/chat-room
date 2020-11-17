@@ -36,8 +36,10 @@
 
       <!--screen to create new room-->
       <div id="create-screen">
-         <input id="new-room-name" type="text" maxlength="50" value="Room Name">
-         <input id="new-room-password" type="text" maxlength="25" value="Room Password (Optional)">
+         <p>Room Name</p>
+         <input id="new-room-name" type="text" maxlength="50"><br>
+         <p>Room Password (Optional)</p>
+         <input id="new-room-password" type="text" maxlength="25"><br>
          <button id="create-room-button">Create</button>
       </div>
 
@@ -55,8 +57,9 @@
         <div id="chatlog"></div> <!-- displays chat history -->
         <p id="admin-commands"> <button id="mute">Mute/Unmute a Participant</button> <button id="remove">Remove a Participant</button>
           <button id="ban">Ban a Participant</button> <button id="unban">Un-ban a Participant</button></p>
-      
-        <button id = "close">Close</button>
+        <div id="close-div">
+          <button id = "close">Close</button>
+        </div>
         <div id="ppl-list"></div> <!-- displays list of participants -->
         <div id = "chat-box">
           <p>To: <span id="recipient">Everyone</span> <button id="show-people">^</button></p>
