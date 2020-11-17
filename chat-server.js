@@ -50,6 +50,9 @@ class User {
   joinRoom(room){
     this.roomName = room;
   }
+  leaveRoom(){
+    this.roomName = "";
+  }
 }
 
 //room class for ease of various room operations
@@ -84,6 +87,7 @@ class Room {
       this.mutedUsers.splice(muteIndex, 1);
     }
 
+    userToRemove.leaveRoom();
     //if user leaves room
     if(this.admin !== null && username == this.admin.username){
       this.admin = null;

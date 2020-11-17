@@ -265,8 +265,10 @@ function setupSockets(){
   socket.on("join_response", function(data){
     errorMessage.innerText = "";
     if(data.status == "success"){
+      roomInput.value = "";
+      passwordInput.value = "";
       adminCommands.style.display = "none";
-      roomSpan.innerText = "Leave Room ("+data.roomName+")";
+      leaveButton.innerText = "Leave Room ("+data.roomName+")";
       homeScreen.style.display = "none";
       chatScreen.style.display = "block";
       passwordScreen.style.display = "none";
@@ -287,7 +289,9 @@ function setupSockets(){
   socket.on("create_response", function(data){
     errorMessage.innerText = "";
     if(data.status == "success"){
-      roomSpan.innerText = "Leave Room ("+data.roomName+")";
+      createNameInput.value = "";
+      createPasswordInput.value = "";
+      leaveButton.innerText = "Leave Room ("+data.roomName+")";
       adminCommands.style.display = "block";
       createScreen.style.display="none";
       chatScreen.style.display="block";
@@ -348,6 +352,7 @@ function setupSockets(){
     errorMessage.innerText = "";
     chatScreen.style.display = "none";
     homeScreen.style.display = "block";
+    chatBox.innerHTML = "";
   })
 }
 
@@ -542,10 +547,7 @@ function chatPerson(recipient){
 
 //when send button is pressed
 function sendChat(){
-  if(chatInput.value == ""){
-    errorMessage.innerText = "Error: Please enter a message"
-  }
-  else{
+  if(chatInput.value != ""){
     errorMessage.innerText = "";
     chatText = chatInput.value;
     chatInput.value = "";
