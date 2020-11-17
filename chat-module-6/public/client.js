@@ -323,7 +323,8 @@ function toRoomsList(){
   roomList.innerHTML = "";
 
   socket.emit("request_rooms_list");
-  socket.on("room_list_response", function(data){ //for each received room, create and add room to room list div
+  //for each received room, create and add room to room list div
+  socket.on("room_list_response", function(data){ 
     data.roomList.forEach(function(room, i){
       let roomp = document.createElement("p");
       roomp.className = "room-list";
@@ -340,64 +341,73 @@ function toRoomsList(){
   });
 }
 
+//when admin clicks on mute button
 function requestMute(){
   socket.emit("people_list");
   requestType = "mute";
   peopleList.style.display="block";
 }
 
+//when admin clicks on remove button
 function requestRemove(){
   socket.emit("people_list");
   requestType = "remove";
   peopleList.style.display="block";
 }
 
+//when admin clicks on ban button
 function requestBan(){
   socket.emit("people_list");
   requestType = "ban";
   peopleList.style.display="block";
 }
 
+//when admin clicks on unban button
 function requestUnban(){
   socket.emit("ban_list");
   requestType = "unban";
   peopleList.style.display="block";
 }
 
+//the show ppl button is clicked
 function showPeople(){
   socket.emit("people_list");
   requestType = "chat";
   peopleList.style.display="block";
 }
 
+//when admin clicks on user to mute
 function mutePerson(recipient){
   peopleList.style.display = "none";
   socket.emit("mute_request", {target_user:recipient})
 }
 
+//when admin clicks on user to unmute
 function unmutePerson(recipient){
   peopleList.style.display = "none";
   socket.emit("unmute_request", {target_user:recipient})
 }
 
+//when admin clicks on user to remove
 function removePerson(recipient){
   peopleList.style.display = "none";
   socket.emit("remove_request", {target_user:recipient})
 }
 
+//when admin clicks on user to ban
 function banPerson(recipient){
   peopleList.style.display = "none";
   socket.emit("ban_request", {target_user:recipient})
 }
 
+//when admin clicks on user to chat
 function chatPerson(recipient){
   peopleList.style.display = "none";
   recipientSpan.innerText = recipient;
 }
 
-
+//when send button is pressed
 function sendChat(){
-  console.log("AH");
   if(chatInput.value == ""){
     errorMessage.innerText = "Error: Please enter a message"
   }
