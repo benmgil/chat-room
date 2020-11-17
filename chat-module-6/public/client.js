@@ -163,6 +163,11 @@ function setupSockets(){
             banPerson(person.username);
           });
         }
+        if(requestType == "unban"){
+          personP.addEventListener("click", function(){
+            unbanPerson(person.username);
+          });
+        }
         if(requestType == "chat"){
           personP.addEventListener("click", function(){
             chatPerson(person.username);
@@ -393,6 +398,12 @@ function removePerson(recipient){
 function banPerson(recipient){
   peopleList.style.display = "none";
   socket.emit("ban_request", {target_user:recipient})
+}
+
+//when admin clicks on user to unban
+function banPerson(recipient){
+  peopleList.style.display = "none";
+  socket.emit("unban_request", {target_user:recipient})
 }
 
 //when admin clicks on user to chat
