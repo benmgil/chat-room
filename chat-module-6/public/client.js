@@ -401,7 +401,7 @@ function banPerson(recipient){
 }
 
 //when admin clicks on user to unban
-function banPerson(recipient){
+function unbanPerson(recipient){
   peopleList.style.display = "none";
   socket.emit("unban_request", {target_user:recipient})
 }

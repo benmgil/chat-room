@@ -258,7 +258,8 @@ io.sockets.on("connection", socket => {
     let room = rooms[socketUser.roomName];
     let users = room.bannedUsers;
     for(let u in users){
-      banList.push({username: u})
+      let user = users[u];
+      banList.push({username: user})
     }
     socket.emit("people_response", {peopleList: banList});
   })
@@ -317,19 +318,11 @@ io.sockets.on("connection", socket => {
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
-      if(room.users.indexOf(targetUser) != -1){
-        room.unbanUser(target);
-        socket.emit("admin_control_response",{
-          status: "success",
-          action: "unban"
-        })
-      }
-      else{
-        socket.emit("admin_control_response",{
-          status: "failure",
-          message: "Target user not in room"
-        })
-      }
+      room.unbanUser(target);
+      socket.emit("admin_control_response",{
+        status: "success",
+        action: "unban"
+      })
     }
     else{
       socket.emit("access_denied");
@@ -387,13 +380,22 @@ io.sockets.on("connection", socket => {
     }
   })
 
+  socket.on("user_left", function(){
+    let room = rooms[socketUser.roomName];
+    room.removeUser(target);
+    socketUser.roomName = "";
+    socket.emit("successful_leave");
+
+  })
+
+
   // mute_request
   // remove_request
   // ban_request
 
   socket.on("disconnect", function(){
     if(typeof socketUser !== 'undefined' && typeof socketUser.username !== 'undefined'){
-      if(socketUser.roomName){
+      if(typeof socketUser.roomName !== 'undefined' && socketUser.roomName != ""){
         rooms[socketUser.roomName].removeUser(socketUser.username);
       }
       delete users[socketUser.username];
