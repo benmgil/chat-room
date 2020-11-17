@@ -28,6 +28,8 @@ let recipientSpan;
 let showRoomatesButton;
 let chatInput;
 let sendButton;
+let chattingBox;
+let mutedP;
 
 let socket;
 let username;
@@ -67,6 +69,8 @@ document.addEventListener("DOMContentLoaded", function(){
   showPeopleButton = document.getElementById("show-people");
   chatInput = document.getElementById("message-input");
   sendButton = document.getElementById("send-button");
+  chattingBox = document.getElementById("chat-box");
+  mutedP = document.getElementById("muted");
 
   loginButton.addEventListener("click", signOn);
   joinRoomButton.addEventListener("click", function(){
@@ -133,8 +137,16 @@ function setupSockets(){
         personP.className = "people-list";
         personP.innerText = person.username;
         if(requestType == "mute"){
+          if(person.muted){
+            personP.className += " muted";
+          }
           personP.addEventListener("click", function(){
-            mutePerson(person.username);
+            if(person.muted){
+              unmutePerson(person.username);
+            }
+            else{
+              mutePerson(person.username);
+            }
           });
         }
         if(requestType == "remove"){
@@ -211,6 +223,35 @@ function setupSockets(){
     }
   })
 
+  socket.on("access_denied", function(){
+    alert("You do not have access to this action.");
+  })
+
+  socket.on("admin_control_response", function(data){
+    if(data.status == "failure"){
+      alert(data.message);
+    }
+  })
+
+  socket.on("muted", function(){
+    chattingBox.style.dispay = "none";
+    mutedP.style.display = "block";
+  })
+
+  socket.on("unmuted", function(){
+    chattingBox.style.dispay = "block";
+    mutedP.style.display = "unmute";
+  })
+
+  socket.on("removed", function(){
+    window.location.reload(true);
+    alert("You have been removed from the room.");
+  })
+
+  socket.on("banned", function(){
+    window.location.reload(true);
+    alert("You have been banned from the room.");
+  })
 }
 
 //joining room
@@ -320,6 +361,11 @@ function showPeople(){
 function mutePerson(recipient){
   peopleList.style.display = "none";
   socket.emit("mute_request", {target_user:recipient})
+}
+
+function unmutePerson(recipient){
+  peopleList.style.display = "none";
+  socket.emit("unmute_request", {target_user:recipient})
 }
 
 function removePerson(recipient){

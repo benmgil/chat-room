@@ -2,6 +2,10 @@
     display: none;
 }
 
+#muted{
+    display:none;
+}
+
 .private {
     background-color: rgb(241, 189, 189);
 }
