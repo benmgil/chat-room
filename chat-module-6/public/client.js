@@ -104,6 +104,7 @@ function closeMenu(){
   peopleList.style.display = "none";
   sendButton.style.display = "block";
   chatInput.style.display = "block";
+  pplListShown = !pplListShown;
 }
 
 //logging in
