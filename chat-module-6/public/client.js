@@ -248,6 +248,7 @@ function setupSockets(){
 
   //if user is unmuted
   socket.on("unmuted", function(){
+    console.log("AH");
     chattingBox.style.display = "block";
     mutedP.style.display = "unmute";
   })
@@ -324,7 +325,7 @@ function toRoomsList(){
 
   socket.emit("request_rooms_list");
   //for each received room, create and add room to room list div
-  socket.on("room_list_response", function(data){ 
+  socket.on("room_list_response", function(data){
     data.roomList.forEach(function(room, i){
       let roomp = document.createElement("p");
       roomp.className = "room-list";

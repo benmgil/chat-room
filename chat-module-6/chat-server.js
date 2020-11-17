@@ -92,10 +92,14 @@ class Room {
     }
   }
   unmuteUser(username){
-    var index = this.mutedUsers.indexOf(username);
-    if (index !== -1) {
-      this.mutedUsers.splice(index, 1);
+    console.log(username);
+    var muteIndex = this.mutedUsers.indexOf(username);
+    if (muteIndex !== -1) {
+      this.mutedUsers.splice(muteIndex, 1);
     }
+  }
+  isMuted(username){
+    return this.mutedUsers.indexOf(username) != -1;
   }
 }
 
@@ -239,7 +243,8 @@ io.sockets.on("connection", socket => {
     let users = room.users;
     for(let u in users){
       let user = users[u];
-      peopleList.push({username: user.username});
+      let isMuted = room.isMuted(user.username);
+      peopleList.push({username: user.username, muted: isMuted});
     }
     socket.emit("people_response", {peopleList: peopleList});
   });
@@ -326,6 +331,7 @@ io.sockets.on("connection", socket => {
     if (socketUser == room.admin){
       let target = data.target_user;
       let targetUser = users[target];
+      console.log(target);
       if(room.users.indexOf(targetUser) != -1){
         room.unmuteUser(target);
         socket.emit("admin_control_response",{
