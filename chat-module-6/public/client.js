@@ -102,8 +102,7 @@ document.addEventListener("DOMContentLoaded", function(){
 function closeMenu(){
   closeButton.style.display = "none";
   peopleList.style.display = "none";
-  sendButton.style.display = "inline-block";
-  chatInput.style.display = "inline-block";
+  chattingBox.style.display = "block";
   pplListShown = !pplListShown;
 }
 
