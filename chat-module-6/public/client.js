@@ -92,9 +92,6 @@ document.addEventListener("DOMContentLoaded", function(){
   sendButton.addEventListener("click", sendChat);
   leaveButton.addEventListener("click", leaveRequest);
 
-  document.getElementById("show-shit").addEventListener("click", function(){
-    socket.emit("showShit");
-  })
 })
 
 //logging in
@@ -104,11 +101,13 @@ function signOn(){
   }
   else{
     socket = io.connect();
+    //request to log in with inputted username
     socket.on("request_username", function(){
       errorMessage.innerText = "";
       username = loginInput.value;
       socket.emit("login", {username:username});
     })
+    //response to login request 
     socket.on("login_response", function(data){
       errorMessage.innerText = "";
       if(data.status == "success"){
@@ -158,7 +157,7 @@ function setupSockets(){
       });
       peopleList.appendChild(every);
     }
-    //adding the appropriate event listener types depending on the purpose of the list being shown
+    //creating a menu to select users 
     data.peopleList.forEach(function(person, i){
       if(person.username != username){
         let personP = document.createElement("p");
@@ -177,6 +176,7 @@ function setupSockets(){
             }
           });
         }
+        //adding the appropriate event listener types depending on the purpose of the list being shown
         if(requestType == "remove"){
           personP.addEventListener("click", function(){
             removePerson(person.username);
