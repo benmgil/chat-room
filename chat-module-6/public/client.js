@@ -98,6 +98,15 @@ document.addEventListener("DOMContentLoaded", function(){
   leaveButton.addEventListener("click", leaveRequest);
   closeButton.addEventListener("click", closeMenu);
 
+  //pressing enter on message box sends the message
+  //citation: https://www.w3schools.com/howto/howto_js_trigger_button_enter.asp
+  chatInput.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+    event.preventDefault();
+    sendButton.click();
+  }
+});
+
 })
 
 //close menu of ppl
@@ -532,6 +541,7 @@ function sendChat(){
   else{
     errorMessage.innerText = "";
     chatText = chatInput.value;
+    chatInput.value = "";
     socket.emit("send_chat", {chat_content:chatText, recipient:recipientSpan.innerText, sender:username})
   }
 }
