@@ -250,7 +250,7 @@ function setupSockets(){
   socket.on("unmuted", function(){
     console.log("AH");
     chattingBox.style.display = "block";
-    mutedP.style.display = "unmute";
+    mutedP.style.display = "none";
   })
 
   //if user is removed from room
