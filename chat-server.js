@@ -33,7 +33,8 @@ const server = http.createServer(function (req, res) {
 server.listen(port);
 
 //socket setup
-const socketio = require("socket.io")(server);
+//const socketio = require("socket.io")(server);
+const socketio = require("socket.io")(http, { wsEngine: 'ws' });
 const io = socketio.listen(server);
 
 //global storage for users and rooms
@@ -76,10 +77,6 @@ class Room {
     if (userIndex !== -1) {
       this.users.splice(userIndex, 1);
     }
-    // var banIndex = this.bannedUsers.indexOf(userToRemove);
-    // if (userIndex !== -1) {
-    //   this.bannedUsers.splice(banIndex, 1);
-    // }
 
     //if user is in muted list, removes them from there
     var muteIndex = this.mutedUsers.indexOf(userToRemove);
@@ -88,7 +85,7 @@ class Room {
     }
 
     userToRemove.leaveRoom();
-    //if user leaves room
+    //if the admin leaves the room set the admin to null
     if(this.admin !== null && username == this.admin.username){
       this.admin = null;
     }
